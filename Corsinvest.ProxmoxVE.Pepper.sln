@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.88
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corsinvest.ProxmoxVE.Pepper", "src\Corsinvest.ProxmoxVE.Pepper\Corsinvest.ProxmoxVE.Pepper.csproj", "{EEE1D115-77C5-4B97-80B4-84DF112FD11F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEE1D115-77C5-4B97-80B4-84DF112FD11F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE1D115-77C5-4B97-80B4-84DF112FD11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE1D115-77C5-4B97-80B4-84DF112FD11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE1D115-77C5-4B97-80B4-84DF112FD11F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCBA79B1-94B0-4398-9CC0-EEE6F09C62D6}
+	EndGlobalSection
+EndGlobal
