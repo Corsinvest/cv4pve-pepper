@@ -15,12 +15,21 @@ Usage: cv4pve-pepper [options]
 
 Options:
   -?|-h|--help  Show help information
-  --host        The host name host[:port]
-  --username    User name <username>@<realm>
-  --password    The password. Specify 'file:path_file' to store password in file.
-  --version     Show version information
-  --vmid        The id or name VM/CT
-  --viewer      Executable SPICE client remote viewer```
+  --version         Show version information
+  --host            The host name host[:port],host1[:port],host2[:port]
+  --username        User name <username>@<realm>
+  --password        The password. Specify 'file:path_file' to store password in file.
+  --vmid            The id or name VM/CT
+  --viewer          Executable SPICE client remote viewer
+
+Commands:
+  app-check-update  Check update application
+  app-upgrade       Upgrade application
+
+Run 'cv4pve-pepper [command] --help' for more information about a command.
+
+cv4pve-pepper is a part of suite cv4pve-tools.
+For more information visit https://www.cv4pve-tools.com
 ```
 
 ## Copyright and License
@@ -30,7 +39,7 @@ For licensing details please visit [LICENSE.md](LICENSE.md)
 
 ## Commercial Support
 
-This software is part of a suite of tools called cv4pve-tools. If you want commercial support, visit the [site](https://www.corsinvest.it/cv4pve-tools)
+This software is part of a suite of tools called cv4pve-tools. If you want commercial support, visit the [site](https://www.cv4pve-tools.com)
 
 ## Introduction
 
@@ -52,6 +61,8 @@ this software aims to simplify run SPICE client from Proxmox VE using command li
 * Not require installation in Proxmox VE
 * Execute out side Proxmox VE
 * Not require Web login
+* Support multiple host for HA in --host parameter es. host[:port],host1[:port],host2[:port]
+* Check-Update and Upgrade application
 
 ## Configuration and use
 

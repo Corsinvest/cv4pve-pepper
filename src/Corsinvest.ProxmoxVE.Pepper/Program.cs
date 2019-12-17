@@ -10,25 +10,25 @@
  * Copyright (C) 2016 Corsinvest Srl	GPLv3 and CEL
  */
 
-using System;
 using System.IO;
 using Corsinvest.ProxmoxVE.Api.Extension.Helpers;
-using Corsinvest.ProxmoxVE.Api.Extension.Helpers.Shell;
+using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 using McMaster.Extensions.CommandLineUtils;
 
 namespace Corsinvest.ProxmoxVE.Pepper
 {
     class Program
     {
-        public static readonly string APP_NAME = "cv4pve-pepper";
         static int Main(string[] args)
         {
-            var app = ShellHelper.CreateConsoleApp(APP_NAME, "Launching SPICE on Proxmox VE", true);
+            var app = ShellHelper.CreateConsoleApp("cv4pve-pepper", 
+                                                   "Launching SPICE on Proxmox VE");
 
-            var optVmId = app.VmIdOrNameOption();
+            var optVmId = app.VmIdOrNameOption().DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             var optRemoteViewer = app.Option("--viewer",
                                              "Executable SPICE client remote viewer",
-                                             CommandOptionType.SingleValue);
+                                             CommandOptionType.SingleValue)
+                                     .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             optRemoteViewer.Accepts().ExistingFile();
 
             app.OnExecute(() =>
@@ -47,7 +47,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                     ret = ShellHelper.Execute(cmd,
                                               true,
                                               null,
-                                              Console.Out,
+                                              app.Out,
                                               app.DryRunIsActive(),
                                               app.DebugIsActive()).ExitCode == 0;
                 }
@@ -55,7 +55,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 return ret ? 0 : 1;
             });
 
-            return app.ExecuteConsoleApp(Console.Out, args);
+            return app.ExecuteConsoleApp(args);
         }
     }
 }
