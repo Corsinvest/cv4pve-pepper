@@ -81,3 +81,16 @@ This tool need basically no configuration.
 ```sh
 root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password=fagiano --vmid 100 --viewer path-spice-viewer
 ```
+
+## SPICE client
+
+* [Windows: virt-viewer 0.5.6 or higher,](http://www.spice-space.org/download.html)
+
+* Linux: virt-viewer 0.5.6 or higher
+
+* [OS X (not yet working as expected): virt-viewer 0.5.7 or higher](https://www.spice-space.org/osx-client.html)
+
+## Topical path of remove viewer
+
+* Linux /usr/bin/remote-viewer
+* Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
