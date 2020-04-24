@@ -1,4 +1,4 @@
-# This file is part of the cv4pve-autosnap https://github.com/Corsinvest/cv4pve-pepper,
+# This file is part of the cv4pve-pepper https://github.com/Corsinvest/cv4pve-pepper,
 #
 # This source file is available under two different licenses:
 # - GNU General Public License version 3 (GPLv3)
@@ -23,15 +23,17 @@ Write-Output "
  == Build System
  ========================================================="
 
-Remove-Item -Path ".\Bin\Release\netcoreapp3.0\"  -Recurse -Force
+$pathNet = "Bin\Release\netcoreapp3.1"
+
+Remove-Item -Path ".\$pathNet"  -Recurse -Force
 
 $rids = @("linux-x64", "linux-arm", "linux-arm64", "osx-x64", "win-x86", "win-x64", "win-arm", "win-arm64")
 foreach ($rid in $rids) {
     dotnet publish -r $rid -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true
-    $path = "bin\Release\netcoreapp3.0\$rid\publish\"
+    $path = "$pathNet\$rid\publish\"
 
     $fileName = Get-ChildItem $path -Exclude *.pdb -name
-    $fileDest = "bin\Release\netcoreapp3.0\$fileName-$rid.zip"   
+    $fileDest = "$pathNet\$fileName-$rid.zip"   
     Remove-Item $fileDest -ErrorAction SilentlyContinue
     Compress-Archive $path\$fileName $fileDest
 }
