@@ -10,6 +10,7 @@
  * Copyright (C) 2016 Corsinvest Srl	GPLv3 and CEL
  */
 
+using System.Diagnostics;
 using System.IO;
 using Corsinvest.ProxmoxVE.Api.Extension.Helpers;
 using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
@@ -21,7 +22,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
     {
         static int Main(string[] args)
         {
-            var app = ShellHelper.CreateConsoleApp("cv4pve-pepper", 
+            var app = ShellHelper.CreateConsoleApp("cv4pve-pepper",
                                                    "Launching SPICE on Proxmox VE");
 
             var optVmId = app.VmIdOrNameOption().DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
@@ -29,27 +30,40 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                              "Executable SPICE client remote viewer",
                                              CommandOptionType.SingleValue)
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
+
             optRemoteViewer.Accepts().ExistingFile();
 
             app.OnExecute(() =>
             {
                 var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
-                var ret = SpiceHelper.CreateFileSpaceClient(app.ClientTryLogin(),
-                                                            optVmId.Value(),
-                                                            fileName);
+                var ret = SpiceHelper.CreateFileSpaceClient(app.ClientTryLogin(), optVmId.Value(), fileName);
 
                 if (ret)
                 {
-                    var cmd = StringHelper.Quote(optRemoteViewer.Value()) +
-                                                 " " +
-                                                 StringHelper.Quote(fileName);
 
-                    ret = ShellHelper.Execute(cmd,
-                                              true,
-                                              null,
-                                              app.Out,
-                                              app.DryRunIsActive(),
-                                              app.DebugIsActive()).ExitCode == 0;
+                    var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo()
+                        {
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = false,
+                            FileName = StringHelper.Quote(optRemoteViewer.Value()),
+                            Arguments = StringHelper.Quote(fileName)
+                        }
+                    };
+
+                    if (app.DebugIsActive())
+                    {
+                        app.Out.WriteLine($"Run FileName: {process.StartInfo.FileName}");
+                        app.Out.WriteLine($"Run Arguments: {process.StartInfo.Arguments}");
+                    }
+
+                    if (!app.DryRunIsActive())
+                    {
+                        process.Start();
+                        ret = process.HasExited ? process.ExitCode == 0 : true;
+                    }
                 }
 
                 return ret ? 0 : 1;
