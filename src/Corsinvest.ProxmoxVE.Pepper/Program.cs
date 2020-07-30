@@ -22,8 +22,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
     {
         static int Main(string[] args)
         {
-            var app = ShellHelper.CreateConsoleApp("cv4pve-pepper",
-                                                   "Launching SPICE on Proxmox VE");
+            var app = ShellHelper.CreateConsoleApp("cv4pve-pepper", "Launching SPICE on Proxmox VE");
 
             var optVmId = app.VmIdOrNameOption().DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             var optRemoteViewer = app.Option("--viewer",
@@ -40,10 +39,9 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                 if (ret)
                 {
-
                     var process = new Process
                     {
-                        StartInfo = new ProcessStartInfo()
+                        StartInfo = new ProcessStartInfo
                         {
                             UseShellExecute = false,
                             CreateNoWindow = true,
