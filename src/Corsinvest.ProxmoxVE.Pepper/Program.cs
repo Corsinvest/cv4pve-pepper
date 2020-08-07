@@ -12,6 +12,7 @@
 
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using Corsinvest.ProxmoxVE.Api.Extension.Helpers;
 using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 using McMaster.Extensions.CommandLineUtils;
@@ -25,11 +26,11 @@ namespace Corsinvest.ProxmoxVE.Pepper
             var app = ShellHelper.CreateConsoleApp("cv4pve-pepper", "Launching SPICE on Proxmox VE");
 
             var optVmId = app.VmIdOrNameOption().DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
+
             var optRemoteViewer = app.Option("--viewer",
                                              "Executable SPICE client remote viewer",
                                              CommandOptionType.SingleValue)
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
-
             optRemoteViewer.Accepts().ExistingFile();
 
             app.OnExecute(() =>
@@ -39,16 +40,27 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                 if (ret)
                 {
+                    var startInfo = new ProcessStartInfo
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = false,
+                    };
+
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        startInfo.FileName = "/bin/bash";
+                        startInfo.Arguments = $"-c \"{optRemoteViewer.Value()} {fileName}\"";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        startInfo.FileName = StringHelper.Quote(optRemoteViewer.Value());
+                        startInfo.Arguments = StringHelper.Quote(fileName);
+                    }
+
                     var process = new Process
                     {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = false,
-                            FileName = StringHelper.Quote(optRemoteViewer.Value()),
-                            Arguments = StringHelper.Quote(fileName)
-                        }
+                        StartInfo = startInfo
                     };
 
                     if (app.DebugIsActive())
