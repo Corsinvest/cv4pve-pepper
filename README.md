@@ -102,3 +102,7 @@ root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password
 
 * Linux /usr/bin/remote-viewer
 * Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
+
+## Error
+
+* **no spice port**: This error appears when you have not configured the display hardware on SPICE.

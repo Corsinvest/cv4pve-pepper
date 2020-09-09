@@ -36,7 +36,8 @@ namespace Corsinvest.ProxmoxVE.Pepper
             app.OnExecute(() =>
             {
                 var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
-                var ret = SpiceHelper.CreateFileSpaceClient(app.ClientTryLogin(), optVmId.Value(), fileName);
+                var client = app.ClientTryLogin();
+                var ret = SpiceHelper.CreateFileSpaceClient(client, optVmId.Value(), fileName);
 
                 if (ret)
                 {
@@ -73,6 +74,13 @@ namespace Corsinvest.ProxmoxVE.Pepper
                     {
                         process.Start();
                         ret = process.HasExited ? process.ExitCode == 0 : true;
+                    }
+                }
+                else
+                {
+                    if(!client.LastResult.IsSuccessStatusCode)
+                    {
+                        app.Out.WriteLine($"Error: {client.LastResult.ReasonPhrase}");
                     }
                 }
 
