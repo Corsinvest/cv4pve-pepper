@@ -73,7 +73,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                     if (!app.DryRunIsActive())
                     {
                         process.Start();
-                        ret = process.HasExited ? process.ExitCode == 0 : true;
+                        ret = !process.HasExited || process.ExitCode == 0;
                     }
                 }
                 else
