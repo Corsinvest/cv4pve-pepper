@@ -20,7 +20,10 @@ Options:
   --api-token       Api token format 'USER@REALM!TOKENID=UUID'. Require Proxmox VE 6.2 or later
   --username        User name <username>@<realm>
   --password        The password. Specify 'file:path_file' to store password in file.
-  --vmid            The id or name VM/CT
+  --vmid            The id or name VM
+  --proxy           SPICE proxy server. This can be used by the client to specify the proxy server.
+                    All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one.
+                    By default, we return the node where the VM is currently running.
   --viewer          Executable SPICE client remote viewer
 
 Commands:

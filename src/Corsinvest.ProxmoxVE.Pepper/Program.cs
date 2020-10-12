@@ -27,17 +27,29 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
             var optVmId = app.VmIdOrNameOption().DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
 
+            var optProxy = app.Option("--proxy",
+                                      @"SPICE proxy server. This can be used by the client to specify the proxy server." +
+                                      " All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one." +
+                                      " By default, we return the node where the VM is currently running.",
+                                      CommandOptionType.SingleValue);
+
             var optRemoteViewer = app.Option("--viewer",
                                              "Executable SPICE client remote viewer",
                                              CommandOptionType.SingleValue)
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             optRemoteViewer.Accepts().ExistingFile();
 
+
+
             app.OnExecute(() =>
             {
                 var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
                 var client = app.ClientTryLogin();
-                var ret = SpiceHelper.CreateFileSpaceClient(client, optVmId.Value(), fileName);
+
+                var ret = SpiceHelper.CreateFileSpaceClient(client,
+                                                            optVmId.Value(),
+                                                            optProxy.HasValue() ? optProxy.Value() : null,
+                                                            fileName);
 
                 if (ret)
                 {
@@ -78,7 +90,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 }
                 else
                 {
-                    if(!client.LastResult.IsSuccessStatusCode)
+                    if (!client.LastResult.IsSuccessStatusCode)
                     {
                         app.Out.WriteLine($"Error: {client.LastResult.ReasonPhrase}");
                     }
