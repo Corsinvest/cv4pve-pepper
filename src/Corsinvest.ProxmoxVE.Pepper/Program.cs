@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using Corsinvest.ProxmoxVE.Api.Extension.Helpers;
+using Corsinvest.ProxmoxVE.Api.Extension.VM;
 using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -43,16 +44,16 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
             app.OnExecute(() =>
             {
-                var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
                 var client = app.ClientTryLogin();
+                var content = client.GetVM(optVmId.Value())
+                                    .GetSpiceFileVV(optProxy.HasValue() ? optProxy.Value() : null);
 
-                var ret = SpiceHelper.CreateFileSpaceClient(client,
-                                                            optVmId.Value(),
-                                                            optProxy.HasValue() ? optProxy.Value() : null,
-                                                            fileName);
+                var ret = client.LastResult.IsSuccessStatusCode;
 
                 if (ret)
                 {
+                    var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
+                    File.WriteAllText(fileName, content);
                     var startInfo = new ProcessStartInfo
                     {
                         UseShellExecute = false,
@@ -90,9 +91,9 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 }
                 else
                 {
-                    if (!client.LastResult.IsSuccessStatusCode)
+                    if (!app.ClientTryLogin().LastResult.IsSuccessStatusCode)
                     {
-                        app.Out.WriteLine($"Error: {client.LastResult.ReasonPhrase}");
+                        app.Out.WriteLine($"Error: {app.ClientTryLogin().LastResult.ReasonPhrase}");
                     }
                 }
 
