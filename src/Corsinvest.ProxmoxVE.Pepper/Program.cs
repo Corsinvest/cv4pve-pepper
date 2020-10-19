@@ -40,8 +40,6 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             optRemoteViewer.Accepts().ExistingFile();
 
-
-
             app.OnExecute(() =>
             {
                 var client = app.ClientTryLogin();
