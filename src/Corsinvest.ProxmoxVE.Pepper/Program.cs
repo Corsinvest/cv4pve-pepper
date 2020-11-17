@@ -38,6 +38,11 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                              "Executable SPICE client remote viewer",
                                              CommandOptionType.SingleValue)
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
+
+            var optFetchedVVProxy = app.Option("--fetched-vv-proxy",
+                                                "Replace the proxy value in the fetched *.vv file. This is used whe you using reverse proxy to access Proxmox VE and redirected the default 3128 port to another port. Then you need to specify it http://[host]:[port]",
+                                                CommandOptionType.SingleValue);
+
             optRemoteViewer.Accepts().ExistingFile();
 
             app.OnExecute(() =>
@@ -51,6 +56,19 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 if (ret)
                 {
                     var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
+                    if (optFetchedVVProxy.HasValue())
+                    {
+                        string[] lines = content.Split("\n");
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            if (lines[i].StartsWith("proxy="))
+                            {
+                                lines[i] = "proxy=" + optFetchedVVProxy.Value();
+                            }
+                        }
+                        string contentmod = string.Join("\n", lines);
+                        content = contentmod;
+                    }
                     File.WriteAllText(fileName, content);
                     var startInfo = new ProcessStartInfo
                     {
