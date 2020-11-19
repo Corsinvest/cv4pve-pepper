@@ -31,7 +31,8 @@ namespace Corsinvest.ProxmoxVE.Pepper
             var optProxy = app.Option("--proxy",
                                       @"SPICE proxy server. This can be used by the client to specify the proxy server." +
                                       " All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one." +
-                                      " By default, we return the node where the VM is currently running.",
+                                      " By default, we return the node where the VM is currently running." +
+                                      " If specify http://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.",
                                       CommandOptionType.SingleValue);
 
             var optRemoteViewer = app.Option("--viewer",
@@ -43,13 +44,36 @@ namespace Corsinvest.ProxmoxVE.Pepper
             app.OnExecute(() =>
             {
                 var client = app.ClientTryLogin();
-                var content = client.GetVM(optVmId.Value())
-                                    .GetSpiceFileVV(optProxy.HasValue() ? optProxy.Value() : null);
 
+                var proxy = optProxy.HasValue() ? optProxy.Value() : null;
+                var proxyForce = (proxy + "").ToLower().StartsWith("http://");
+
+                var content = client.GetVM(optVmId.Value()).GetSpiceFileVV(proxyForce ? null : proxy);
                 var ret = client.LastResult.IsSuccessStatusCode;
 
                 if (ret)
                 {
+                    //proxy force
+                    if (proxyForce)
+                    {
+                        var lines = content.Split("\n");
+                        for (int i = 0; i < lines.Length; i++)
+                        {
+                            if (lines[i].StartsWith("proxy="))
+                            {
+                                lines[i] = $"proxy={proxy}";
+                                break;
+                            }
+                        }
+                        content = string.Join("\n", lines);
+
+                        if (app.DebugIsActive())
+                        {
+                            app.Out.WriteLine($"Replace Proxy: {proxy}");
+                            app.Out.WriteLine(content);
+                        }
+                    }
+
                     var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
                     File.WriteAllText(fileName, content);
                     var startInfo = new ProcessStartInfo

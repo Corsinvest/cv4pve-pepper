@@ -24,6 +24,7 @@ Options:
   --proxy           SPICE proxy server. This can be used by the client to specify the proxy server.
                     All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one.
                     By default, we return the node where the VM is currently running.
+                    If specify http://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
   --viewer          Executable SPICE client remote viewer
 
 Commands:
