@@ -35,11 +35,11 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                       " If specify http://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.",
                                       CommandOptionType.SingleValue);
 
-            var optRemoteViewer = app.Option("--viewer",
-                                             "Executable SPICE client remote viewer",
-                                             CommandOptionType.SingleValue)
+            var optRemoteViewer = app.Option("--viewer", "Executable SPICE client remote viewer.", CommandOptionType.SingleValue)
                                      .DependOn(app, CommandOptionExtension.HOST_OPTION_NAME);
             optRemoteViewer.Accepts().ExistingFile();
+
+            var optViewerOptions = app.Option("--viewer-options", "Send options directly SPICE Viewer (quote value).", CommandOptionType.SingleValue);
 
             app.OnExecute(() =>
             {
@@ -83,15 +83,17 @@ namespace Corsinvest.ProxmoxVE.Pepper
                         RedirectStandardOutput = false,
                     };
 
+                    var viewerOpts = optViewerOptions.Value() + "";
+
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
                         startInfo.FileName = "/bin/bash";
-                        startInfo.Arguments = $"-c \"{optRemoteViewer.Value()} {fileName}\"";
+                        startInfo.Arguments = $"-c \"{optRemoteViewer.Value()} {fileName} {viewerOpts}\"";
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         startInfo.FileName = StringHelper.Quote(optRemoteViewer.Value());
-                        startInfo.Arguments = StringHelper.Quote(fileName);
+                        startInfo.Arguments = $"\"{fileName}\" {viewerOpts}";
                     }
 
                     var process = new Process

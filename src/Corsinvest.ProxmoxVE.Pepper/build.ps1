@@ -23,17 +23,20 @@ Write-Output "
  == Build System
  ========================================================="
 
-$pathNet = "Bin\Release\netcoreapp3.1"
+$pathNet = "Bin\Release\net5.0"
 
 Remove-Item -Path ".\$pathNet"  -Recurse -Force
 
 $rids = @("linux-x64", "linux-arm", "linux-arm64", "osx-x64", "win-x86", "win-x64", "win-arm", "win-arm64")
 foreach ($rid in $rids) {
-    dotnet publish -r $rid -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true
+    Write-Output "========================================="
+    Write-Output "== $rid"
+    Write-Output "========================================="
+    dotnet publish -r $rid -c Release /p:PublishSingleFile=true /p:PublishTrimmed=true /p:IncludeNativeLibrariesForSelfExtract=true
     $path = "$pathNet\$rid\publish\"
 
     $fileName = Get-ChildItem $path -Exclude *.pdb -name
-    $fileDest = "$pathNet\$fileName-$rid.zip"   
+    $fileDest = "$pathNet\$fileName-$rid.zip"
     Remove-Item $fileDest -ErrorAction SilentlyContinue
     Compress-Archive $path\$fileName $fileDest
 }

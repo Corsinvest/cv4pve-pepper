@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Version>1.4.0</Version>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.5 .0</Version>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>cv4pve-pepper</AssemblyName>
     <Company>Corsinvest Srl</Company>
     <Authors>Daniele Corsini</Authors>
@@ -19,9 +19,9 @@
     <TrimmerRootAssembly Include="System.Net.WebClient" />
 
     <!-- <ProjectReference Include="..\..\..\cv4pve-api-dotnet\src\Corsinvest.ProxmoxVE.Api.Shell\Corsinvest.ProxmoxVE.Api.Shell.csproj" /> -->
-    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Shell" Version="2.8.0" />
+    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Shell" Version="2.8.1" />
   </ItemGroup>
-  
+
   <Target Name="SpicNSpan" AfterTargets="Clean">
     <RemoveDir Directories="$(TargetDir)" />
     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" />

@@ -25,7 +25,8 @@ Options:
                     All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one.
                     By default, we return the node where the VM is currently running.
                     If specify http://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
-  --viewer          Executable SPICE client remote viewer
+  --viewer          Executable SPICE client remote viewer.
+  --viewer-options  Send options directly SPICE Viewer (quote value).
 
 Commands:
   app-check-update  Check update application
@@ -69,6 +70,7 @@ this software aims to simplify run SPICE client from Proxmox VE using command li
 * Support multiple host for HA in --host parameter es. host[:port],host1[:port],host2[:port]
 * Check-Update and Upgrade application
 * Use Api token --api-token parameter
+* Send options directly to viewer
 
 ## Api token
 
@@ -106,6 +108,11 @@ root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password
 
 * Linux /usr/bin/remote-viewer
 * Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
+
+## Options of remove viewer
+
+Use --viewer-options to send options to viewer.
+E.g. --viewer-options "-f" for full screen.
 
 ## Error
 
