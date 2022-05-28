@@ -10,8 +10,10 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/bin/Debug/netcoreapp3.1/cv4pve-pepper.dll",
-            "args": [],
+            "program": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/bin/Debug/net6.0/cv4pve-pepper.dll",
+            "args": [
+                "@TestParm.parm"
+            ],
             "cwd": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
