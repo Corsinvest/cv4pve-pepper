@@ -1,6 +1,6 @@
 # cv4pve-pepper
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg)](LICENSE.md) [![AppVeyor branch](https://img.shields.io/appveyor/ci/franklupo/cv4pve-pepper/master.svg)](https://ci.appveyor.com/project/franklupo/cv4pve-pepper)
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg)](LICENSE.md)
 
 ```text
 Description:
