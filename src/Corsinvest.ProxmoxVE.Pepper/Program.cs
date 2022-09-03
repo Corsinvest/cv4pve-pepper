@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 
 namespace Corsinvest.ProxmoxVE.Pepper
@@ -35,6 +36,16 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
             var optViewerOptions = app.AddOption("--viewer-options", "Send options directly SPICE Viewer (quote value).");
 
+            var optStartOrResume = app.AddOption("--start-or-resume", "Run stopped or paused VM");
+            optStartOrResume.IsRequired = false;
+            optStartOrResume.SetDefaultValue("false");
+
+            var optWaitForStartup = app.AddOption("--wait-for-startup", "Wait for startup VM");
+            optWaitForStartup.IsRequired = false;
+            optWaitForStartup.SetDefaultValue(5);
+            
+            var startOrResume = optStartOrResume.GetValue() == "true";
+
             app.SetHandler(async (InvocationContext ctx) =>
             {
                 var loggerFactory = ConsoleHelper.CreateLoggerFactory<Program>(app.GetLogLevelFromDebug());
@@ -44,7 +55,37 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 if (string.IsNullOrWhiteSpace(proxy)) { proxy = client.Host; }
 
                 var vm = await client.GetVm(optVmId.GetValue());
-                var (success, reasonPhrase, content) = await VmHelper.GetQemuSpiceFileVV(client, vm.Node,vm.VmId, proxy);
+
+                if (startOrResume && (vm.IsStopped || vm.IsPaused))
+                {
+                    if (app.DebugIsActive())
+                    {
+                        await Console.Out.WriteLineAsync(
+                            $"VM is {(vm.IsStopped ? "stopped" : "paused")}. {(vm.IsStopped ? "Running" : "Resuming")} now!");
+                    }
+
+                    await VmHelper.ChangeStatusVm(client, vm.Node, vm.VmType, vm.VmId,
+                        vm.IsStopped ? VmStatus.Start : VmStatus.Resume);
+
+                    for (var i = 1; i < int.Parse(optWaitForStartup.GetValue()); i++)
+                    {
+                        if (app.DebugIsActive())
+                        {
+                            await Console.Out.WriteAsync($"\r{10 - i}");
+                        }
+
+                        await Task.Delay(1000);
+                    }
+
+                    if (app.DebugIsActive())
+                    {
+                        await Console.Out.WriteLineAsync();
+                        await Console.Out.WriteLineAsync("VM is running.");
+                    }
+                }
+
+                var (success, reasonPhrase, content) =
+                    await VmHelper.GetQemuSpiceFileVV(client, vm.Node, vm.VmId, proxy);
                 if (success)
                 {
                     //proxy force
@@ -59,6 +100,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                 break;
                             }
                         }
+
                         content = string.Join("\n", lines);
 
                         if (app.DebugIsActive())
@@ -97,8 +139,8 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                     if (app.DebugIsActive())
                     {
-                        Console.Out.WriteLine($"Run FileName: {process.StartInfo.FileName}");
-                        Console.Out.WriteLine($"Run Arguments: {process.StartInfo.Arguments}");
+                        await Console.Out.WriteLineAsync($"Run FileName: {process.StartInfo.FileName}");
+                        await Console.Out.WriteLineAsync($"Run Arguments: {process.StartInfo.Arguments}");
                     }
 
                     if (!app.DryRunIsActive())
@@ -111,7 +153,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 }
                 else
                 {
-                    Console.Out.WriteLine($"Error: {reasonPhrase}");
+                    await Console.Out.WriteLineAsync($"Error: {reasonPhrase}");
                     ctx.ExitCode = 1;
                 }
             });
