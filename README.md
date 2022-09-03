@@ -31,6 +31,8 @@ Options:
                                      http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
   --viewer <viewer> (REQUIRED)       Executable SPICE client remote viewer.
   --viewer-options <viewer-options>  Send options directly SPICE Viewer (quote value).
+  --start-or-resume <start-or-resume>    Run stopped or paused VM [default: false]
+  --wait-for-startup <wait-for-startup>  Wait for startup VM [default: 5]
   --version                          Show version information
   -?, -h, --help                     Show help and usage information
 
@@ -69,6 +71,7 @@ this software aims to simplify run SPICE client from Proxmox VE using command li
 * Execute out side Proxmox VE
 * Not require Web login
 * Support multiple host for HA in --host parameter es. host[:port],host1[:port],host2[:port]
+* Start or Resume VM on connection
 * Check-Update and Upgrade application
 * Use Api token --api-token parameter
 * Send options directly to viewer
