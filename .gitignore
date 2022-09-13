@@ -351,5 +351,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-TestParm.parm
-.idea/.idea.Corsinvest.ProxmoxVE.Pepper/.idea/
+Parm.parm
