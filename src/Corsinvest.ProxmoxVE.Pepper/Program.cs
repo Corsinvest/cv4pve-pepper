@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: GPL-3.0-only
  */
@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
+using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 
 namespace Corsinvest.ProxmoxVE.Pepper
@@ -35,6 +36,11 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
             var optViewerOptions = app.AddOption("--viewer-options", "Send options directly SPICE Viewer (quote value).");
 
+            var optStartOrResume = app.AddOption<bool>("--start-or-resume", "Run stopped or paused VM");
+
+            var optWaitForStartup = app.AddOption<int>("--wait-for-startup", "Wait sec. for startup VM");
+            optWaitForStartup.SetDefaultValue(5);
+
             app.SetHandler(async (InvocationContext ctx) =>
             {
                 var loggerFactory = ConsoleHelper.CreateLoggerFactory<Program>(app.GetLogLevelFromDebug());
@@ -44,7 +50,26 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 if (string.IsNullOrWhiteSpace(proxy)) { proxy = client.Host; }
 
                 var vm = await client.GetVm(optVmId.GetValue());
-                var (success, reasonPhrase, content) = await VmHelper.GetQemuSpiceFileVV(client, vm.Node,vm.VmId, proxy);
+
+                if (optStartOrResume.GetValue() && (vm.IsStopped || vm.IsPaused))
+                {
+                    var status = vm.IsStopped ? VmStatus.Start : VmStatus.Resume;
+
+                    if (app.DebugIsActive())
+                    {
+                        await Console.Out.WriteLineAsync($"VM is {(vm.IsStopped ? "stopped" : "paused")}. {status} now!");
+                    }
+
+                    //start VM
+                    var result = await VmHelper.ChangeStatusVm(client, vm.Node, vm.VmType, vm.VmId, status);
+                    await client.WaitForTaskToFinish(result, timeout: optWaitForStartup.GetValue() * 1000);
+
+                    //check VM is running
+                    vm = await client.GetVm(optVmId.GetValue());
+                    if (app.DebugIsActive()) { await Console.Out.WriteLineAsync($"VM is {vm.Status}."); }
+                }
+
+                var (success, reasonPhrase, content) = await VmHelper.GetQemuSpiceFileVV(client, vm.Node, vm.VmId, proxy);
                 if (success)
                 {
                     //proxy force
@@ -63,8 +88,8 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                         if (app.DebugIsActive())
                         {
-                            Console.Out.WriteLine($"Replace Proxy: {proxy}");
-                            Console.Out.WriteLine(content);
+                            await Console.Out.WriteLineAsync($"Replace Proxy: {proxy}");
+                            await Console.Out.WriteLineAsync(content);
                         }
                     }
 
@@ -97,8 +122,8 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                     if (app.DebugIsActive())
                     {
-                        Console.Out.WriteLine($"Run FileName: {process.StartInfo.FileName}");
-                        Console.Out.WriteLine($"Run Arguments: {process.StartInfo.Arguments}");
+                        await Console.Out.WriteLineAsync($"Run FileName: {process.StartInfo.FileName}");
+                        await Console.Out.WriteLineAsync($"Run Arguments: {process.StartInfo.Arguments}");
                     }
 
                     if (!app.DryRunIsActive())
@@ -111,7 +136,7 @@ namespace Corsinvest.ProxmoxVE.Pepper
                 }
                 else
                 {
-                    Console.Out.WriteLine($"Error: {reasonPhrase}");
+                    await Console.Out.WriteLineAsync($"Error: {reasonPhrase}");
                     ctx.ExitCode = 1;
                 }
             });

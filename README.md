@@ -21,18 +21,20 @@ Usage:
   cv4pve-pepper [command] [options]
 
 Options:
-  --host <host> (REQUIRED)           The host name host[:port],host1[:port],host2[:port]
-  --api-token <api-token>            Api token format 'USER@REALM!TOKENID=UUID'. Require Proxmox VE 6.2 or later
-  --username <username>              User name <username>@<realm>
-  --password <password>              The password. Specify 'file:path_file' to store password in file.
-  --vmid <vmid>                      The id or name VM/CT
-  --proxy <proxy>                    SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs
-                                     'spiceproxy', so it is up to the client to choose one. By default, we return the node to connect. If specify
-                                     http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
-  --viewer <viewer> (REQUIRED)       Executable SPICE client remote viewer.
-  --viewer-options <viewer-options>  Send options directly SPICE Viewer (quote value).
-  --version                          Show version information
-  -?, -h, --help                     Show help and usage information
+  --host <host> (REQUIRED)               The host name host[:port],host1[:port],host2[:port]
+  --api-token <api-token>                Api token format 'USER@REALM!TOKENID=UUID'. Require Proxmox VE 6.2 or later
+  --username <username>                  User name <username>@<realm>
+  --password <password>                  The password. Specify 'file:path_file' to store password in file.
+  --vmid <vmid>                          The id or name VM/CT
+  --proxy <proxy>                        SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs
+                                         'spiceproxy', so it is up to the client to choose one. By default, we return the node to connect. If specify
+                                         http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
+  --viewer <viewer> (REQUIRED)           Executable SPICE client remote viewer.
+  --viewer-options <viewer-options>      Send options directly SPICE Viewer (quote value).
+  --start-or-resume                      Run stopped or paused VM
+  --wait-for-startup <wait-for-startup>  Wait sec. for startup VM [default: 5]
+  --version                              Show version information
+  -?, -h, --help                         Show help and usage information
 
 Commands:
   app-check-update  Check update application
@@ -69,6 +71,7 @@ this software aims to simplify run SPICE client from Proxmox VE using command li
 * Execute out side Proxmox VE
 * Not require Web login
 * Support multiple host for HA in --host parameter es. host[:port],host1[:port],host2[:port]
+* Start or Resume VM on connection
 * Check-Update and Upgrade application
 * Use Api token --api-token parameter
 * Send options directly to viewer
