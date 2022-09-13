@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SPDX-FileCopyrightText: Copyright Corsinvest Srl
  * SPDX-License-Identifier: GPL-3.0-only
  */
@@ -36,15 +36,10 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
             var optViewerOptions = app.AddOption("--viewer-options", "Send options directly SPICE Viewer (quote value).");
 
-            var optStartOrResume = app.AddOption("--start-or-resume", "Run stopped or paused VM");
-            optStartOrResume.IsRequired = false;
-            optStartOrResume.SetDefaultValue("false");
+            var optStartOrResume = app.AddOption<bool>("--start-or-resume", "Run stopped or paused VM");
 
-            var optWaitForStartup = app.AddOption("--wait-for-startup", "Wait for startup VM");
-            optWaitForStartup.IsRequired = false;
+            var optWaitForStartup = app.AddOption<int>("--wait-for-startup", "Wait sec. for startup VM");
             optWaitForStartup.SetDefaultValue(5);
-            
-            var startOrResume = optStartOrResume.GetValue() == "true";
 
             app.SetHandler(async (InvocationContext ctx) =>
             {
@@ -56,36 +51,25 @@ namespace Corsinvest.ProxmoxVE.Pepper
 
                 var vm = await client.GetVm(optVmId.GetValue());
 
-                if (startOrResume && (vm.IsStopped || vm.IsPaused))
+                if (optStartOrResume.GetValue() && (vm.IsStopped || vm.IsPaused))
                 {
-                    if (app.DebugIsActive())
-                    {
-                        await Console.Out.WriteLineAsync(
-                            $"VM is {(vm.IsStopped ? "stopped" : "paused")}. {(vm.IsStopped ? "Running" : "Resuming")} now!");
-                    }
-
-                    await VmHelper.ChangeStatusVm(client, vm.Node, vm.VmType, vm.VmId,
-                        vm.IsStopped ? VmStatus.Start : VmStatus.Resume);
-
-                    for (var i = 1; i < int.Parse(optWaitForStartup.GetValue()); i++)
-                    {
-                        if (app.DebugIsActive())
-                        {
-                            await Console.Out.WriteAsync($"\r{10 - i}");
-                        }
-
-                        await Task.Delay(1000);
-                    }
+                    var status = vm.IsStopped ? VmStatus.Start : VmStatus.Resume;
 
                     if (app.DebugIsActive())
                     {
-                        await Console.Out.WriteLineAsync();
-                        await Console.Out.WriteLineAsync("VM is running.");
+                        await Console.Out.WriteLineAsync($"VM is {(vm.IsStopped ? "stopped" : "paused")}. {status} now!");
                     }
+
+                    //start VM
+                    var result = await VmHelper.ChangeStatusVm(client, vm.Node, vm.VmType, vm.VmId, status);
+                    await client.WaitForTaskToFinish(result, timeout: optWaitForStartup.GetValue() * 1000);
+
+                    //check VM is running
+                    vm = await client.GetVm(optVmId.GetValue());
+                    if (app.DebugIsActive()) { await Console.Out.WriteLineAsync($"VM is {vm.Status}."); }
                 }
 
-                var (success, reasonPhrase, content) =
-                    await VmHelper.GetQemuSpiceFileVV(client, vm.Node, vm.VmId, proxy);
+                var (success, reasonPhrase, content) = await VmHelper.GetQemuSpiceFileVV(client, vm.Node, vm.VmId, proxy);
                 if (success)
                 {
                     //proxy force
@@ -100,13 +84,12 @@ namespace Corsinvest.ProxmoxVE.Pepper
                                 break;
                             }
                         }
-
                         content = string.Join("\n", lines);
 
                         if (app.DebugIsActive())
                         {
-                            Console.Out.WriteLine($"Replace Proxy: {proxy}");
-                            Console.Out.WriteLine(content);
+                            await Console.Out.WriteLineAsync($"Replace Proxy: {proxy}");
+                            await Console.Out.WriteLineAsync(content);
                         }
                     }
 
