@@ -109,7 +109,7 @@ root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password
 
 * [OS X (not yet working as expected): virt-viewer 0.5.7 or higher](https://www.spice-space.org/osx-client.html)
 
-## Topical path of remove viewer
+## Topical path of remote viewer
 
 * Linux /usr/bin/remote-viewer
 * Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
