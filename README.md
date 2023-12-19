@@ -34,6 +34,7 @@ Options:
   --start-or-resume                      Run stopped or paused VM
   --wait-for-startup <wait-for-startup>  Wait sec. for startup VM [default: 5]
   --version                              Show version information
+  --debug                                Show debug information
   -?, -h, --help                         Show help and usage information
 
 Commands:
@@ -114,7 +115,7 @@ root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password
 * Linux /usr/bin/remote-viewer
 * Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
 
-## Options of remove viewer
+## Options of remote viewer
 
 Use --viewer-options to send options to viewer.
 E.g. --viewer-options "-f" for full screen.
