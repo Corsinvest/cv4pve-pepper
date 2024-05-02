@@ -26,7 +26,7 @@ var optProxy = app.AddOption<string>("--proxy",
                                       " By default, we return the node to connect." +
                                       " If specify http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.");
 
-var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer.")
+var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer (remote-viewer executable)")
                          .AddValidatorExistFile();
 optRemoteViewer.IsRequired = true;
 
