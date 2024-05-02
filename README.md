@@ -25,14 +25,22 @@ Options:
   --validate-certificate                 Validate SSL Certificate Proxmox VE node.
   --host <host> (REQUIRED)               The host name host[:port],host1[:port],host2[:port]
   --vmid <vmid>                          The id or name VM/CT
+<<<<<<< HEAD
   --proxy <proxy>                        SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to
                                          the client to choose one. By default, we return the node to connect. If specify http(s)://[host]:[port] then replace proxy option in file
                                          .vv. E.g. for reverse proxy.
   --viewer <viewer> (REQUIRED)           Executable SPICE client remote viewer.
+=======
+  --proxy <proxy>                        SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs
+                                         'spiceproxy', so it is up to the client to choose one. By default, we return the node to connect. If specify
+                                         http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
+  --viewer <viewer> (REQUIRED)           Executable SPICE client remote viewer (remote-viewer executable)
+>>>>>>> a95eafc5623471c7e5825e184b29d43e6ad0fcf5
   --viewer-options <viewer-options>      Send options directly SPICE Viewer (quote value).
   --start-or-resume                      Run stopped or paused VM
   --wait-for-startup <wait-for-startup>  Wait sec. for startup VM [default: 5]
   --version                              Show version information
+  --debug                                Show debug information
   -?, -h, --help                         Show help and usage information
 ```
 
@@ -105,12 +113,12 @@ root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password
 
 * [OS X (not yet working as expected): virt-viewer 0.5.7 or higher](https://www.spice-space.org/osx-client.html)
 
-## Topical path of remove viewer
+## Topical path of remote viewer
 
 * Linux /usr/bin/remote-viewer
 * Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
 
-## Options of remove viewer
+## Options of remote viewer
 
 Use --viewer-options to send options to viewer.
 E.g. --viewer-options "-f" for full screen.
