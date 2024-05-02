@@ -7,9 +7,9 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/Corsinvest.ProxmoxVE.Pepper.csproj",
+                "${workspaceFolder}/Corsinvest.ProxmoxVE.Pepper.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -19,9 +19,9 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/Corsinvest.ProxmoxVE.Pepper.csproj",
+                "${workspaceFolder}/Corsinvest.ProxmoxVE.Pepper.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -32,9 +32,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/Corsinvest.ProxmoxVE.Pepper.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "--project",
+                "${workspaceFolder}/Corsinvest.ProxmoxVE.Pepper.sln"
             ],
             "problemMatcher": "$msCompile"
         }
