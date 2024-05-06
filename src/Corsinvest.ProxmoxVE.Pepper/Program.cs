@@ -65,7 +65,7 @@ app.SetHandler(async (ctx) =>
         if (app.DebugIsActive()) { await Console.Out.WriteLineAsync($"VM is {vm.Status}."); }
     }
 
-    var (success, reasonPhrase, content) = await client.Nodes[vm.Node].Qemu[vm.Id].Spiceproxy.GetSpiceFileVVAsync(proxy);
+    var (success, reasonPhrase, content) = await client.Nodes[vm.Node].Qemu[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy);
     if (success)
     {
         //proxy force
