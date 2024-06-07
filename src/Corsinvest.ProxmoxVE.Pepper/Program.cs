@@ -5,6 +5,7 @@
 
 using System;
 using System.CommandLine;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -65,7 +66,13 @@ app.SetHandler(async (ctx) =>
         if (app.DebugIsActive()) { await Console.Out.WriteLineAsync($"VM is {vm.Status}."); }
     }
 
-    var (success, reasonPhrase, content) = await client.Nodes[vm.Node].Qemu[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy);
+    var (success, reasonPhrase, content) = vm.VmType switch
+    {
+        VmType.Qemu => await client.Nodes[vm.Node].Qemu[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy),
+        VmType.Lxc => await client.Nodes[vm.Node].Lxc[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy),
+        _ => throw new InvalidEnumArgumentException(),
+    };
+
     if (success)
     {
         //proxy force
