@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-using System;
 using System.CommandLine;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Api.Extension;
