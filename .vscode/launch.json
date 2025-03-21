@@ -2,20 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Usare IntelliSense per individuare gli attributi esistenti per il debug C#
-            // Usa il passaggio del mouse per la descrizione degli attributi esistenti
-            // Per ulteriori informazioni, visitare https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            // Se i framework di destinazione sono stati modificati, assicurarsi di aggiornare il percorso del programma.
-            "program": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/bin/Debug/net8.0/cv4pve-pepper.dll",
+            "program": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper/bin/Debug/net9.0/cv4pve-pepper.dll",
             "args": [
                 "@Parm.parm"
             ],
             "cwd": "${workspaceFolder}/src/Corsinvest.ProxmoxVE.Pepper",
-            // Per ulteriori informazioni sul campo 'console', vedere https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
         },
