@@ -1,0 +1,101 @@
+name: 🐛 Bug Report
+description: Report a bug in cv4pve-pepper
+title: "[BUG] "
+labels: ["bug", "needs investigation"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        
+        Thanks for taking the time to fill out this bug report!
+        
+        **Before submitting:** Search existing issues to avoid duplicates.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the issue briefly
+      placeholder: Describe your issue!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen
+      placeholder: Describe the expected behavior!
+    validations:
+      required: true
+
+  - type: textarea
+    id: command-used
+    attributes:
+      label: Command used
+      description: |
+        Paste the exact command you ran. **Remove passwords and API tokens!**
+      placeholder: |
+        cv4pve-pepper --host=pve.local --username=user@pam --password=*** --vmid=100 --viewer=/usr/bin/remote-viewer
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log output
+      description: |
+        **Use `--debug` parameter to get detailed logs, then paste the output here.**
+        
+        ⚠️ **ATTENTION: Remove sensitive data (passwords, API keys) before pasting!**
+      placeholder: Run your command with --debug and paste the output here
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: cv4pve-version
+    attributes:
+      label: cv4pve-pepper Version
+      placeholder: "v1.2.3"
+    validations:
+      required: true
+
+  - type: input
+    id: proxmox-version
+    attributes:
+      label: Proxmox VE Version
+      placeholder: "8.0.4"
+    validations:
+      required: true
+
+  - type: input
+    id: spice-client
+    attributes:
+      label: SPICE Client
+      description: Output of "remote-viewer --version"
+      placeholder: "remote-viewer 10.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Linux
+        - Windows
+        - macOS
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: pr
+    attributes:
+      label: Pull Request
+      options:
+        - label: I would like to do a Pull Request
