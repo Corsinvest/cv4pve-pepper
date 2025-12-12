@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
 
 PackageIdentifier: Corsinvest.cv4pve.pepper
-PackageVersion: 1.8.0
+PackageVersion: 1.9.0
 PackageLocale: en-US
 Publisher: Corsinvest Srl
 PublisherUrl: https://www.corsinvest.it
@@ -13,7 +13,7 @@ PackageName: cv4pve-pepper
 PackageUrl: https://github.com/Corsinvest/cv4pve-pepper
 License: GPL-3.0-only
 LicenseUrl: https://github.com/Corsinvest/cv4pve-pepper/blob/master/LICENSE.md
-Copyright: Copyright (c) 2019-2024 Corsinvest Srl
+Copyright: Copyright (c) 2019-2025 Corsinvest Srl
 CopyrightUrl: https://github.com/Corsinvest/cv4pve-pepper/blob/master/LICENSE.md
 ShortDescription: Launching SPICE Remote Viewer for Proxmox VE
 Description: |-
@@ -41,6 +41,6 @@ Tags:
 - lxc
 - virtualization
 - vm
-ReleaseNotesUrl: https://github.com/Corsinvest/cv4pve-pepper/releases/tag/v1.8.0
+ReleaseNotesUrl: https://github.com/Corsinvest/cv4pve-pepper/releases/tag/v1.9.0
 ManifestType: defaultLocale
 ManifestVersion: 1.10.0
