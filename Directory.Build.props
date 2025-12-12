@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <Version>1.9.0</Version>
+    <Company>Corsinvest Srl</Company>
+    <Authors>Corsinvest Srl</Authors>
+    <Copyright>Corsinvest Srl</Copyright>
+    <Product>Corsinvest Launching SPICE for Proxmox VE</Product>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
+  </PropertyGroup>
+</Project>

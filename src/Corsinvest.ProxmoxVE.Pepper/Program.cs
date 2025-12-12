@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-using System.CommandLine;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using Corsinvest.ProxmoxVE.Api.Console.Helpers;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
-using Corsinvest.ProxmoxVE.Api.Shell.Helpers;
 using Microsoft.Extensions.Logging;
 
 var app = ConsoleHelper.CreateApp("cv4pve-pepper", "Launching SPICE remote-viewer for Proxmox VE");
@@ -27,24 +26,25 @@ var optProxy = app.AddOption<string>("--proxy",
 
 var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer (remote-viewer executable)")
                          .AddValidatorExistFile();
-optRemoteViewer.IsRequired = true;
+optRemoteViewer.Required = true;
 
 var optViewerOptions = app.AddOption<string>("--viewer-options", "Send options directly SPICE Viewer (quote value).");
 var optStartOrResume = app.AddOption<bool>("--start-or-resume", "Run stopped or paused VM");
 
 var optWaitForStartup = app.AddOption<int>("--wait-for-startup", "Wait sec. for startup VM");
-optWaitForStartup.SetDefaultValue(5);
+optWaitForStartup.DefaultValueFactory = (_) => 5;
+//        opt.DefaultValueFactory = (_) => TableGenerator.Output.Text;
 
-app.SetHandler(async (ctx) =>
+app.SetAction(async (action) =>
 {
     var client = await app.ClientTryLoginAsync(loggerFactory);
-    var proxy = ctx.ParseResult.GetValueForOption(optProxy);
-    if (string.IsNullOrWhiteSpace(proxy)) { proxy = client.Host; }
+    var proxy = action.GetValue(optProxy);
 
-    var vmId = ctx.ParseResult.GetValueForOption(optVmId);
+    if (string.IsNullOrWhiteSpace(proxy)) { proxy = client.Host; }
+    var vmId = action.GetValue(optVmId);
 
     var vm = await client.GetVmAsync(vmId);
-    if (ctx.ParseResult.GetValueForOption(optStartOrResume) && (vm.IsStopped || vm.IsPaused))
+    if (action.GetValue(optStartOrResume) && (vm.IsStopped || vm.IsPaused))
     {
         var status = vm.IsStopped
                         ? VmStatus.Start
@@ -57,7 +57,11 @@ app.SetHandler(async (ctx) =>
 
         //start VM
         var result = await VmHelper.ChangeStatusVmAsync(client, vm.Node, vm.VmType, vm.VmId, status);
-        await client.WaitForTaskToFinishAsync(result, timeout: ctx.ParseResult.GetValueForOption(optWaitForStartup) * 1000);
+        if (!result.IsSuccessStatusCode)
+        {
+            await Console.Out.WriteLineAsync($"Error with code: {result.StatusCode}, phrase {result.ReasonPhrase}!");
+        }
+        await client.WaitForTaskToFinishAsync(result, timeout: action.GetValue(optWaitForStartup) * 1000);
 
         //check VM is running
         vm = await client.GetVmAsync(vmId);
@@ -103,8 +107,8 @@ app.SetHandler(async (ctx) =>
             RedirectStandardOutput = false,
         };
 
-        var viewerOptions = ctx.ParseResult.GetValueForOption(optViewerOptions);
-        var remoteViewer = ctx.ParseResult.GetValueForOption(optRemoteViewer);
+        var viewerOptions = action.GetValue(optViewerOptions);
+        var remoteViewer = action.GetValue(optRemoteViewer);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -131,15 +135,17 @@ app.SetHandler(async (ctx) =>
         if (!app.DryRunIsActive())
         {
             process.Start();
-            ctx.ExitCode = !process.HasExited || process.ExitCode == 0
-                                ? 0
-                                : 1;
+            return !process.HasExited || process.ExitCode == 0
+                    ? 0
+                    : 1;
         }
+
+        return 0;
     }
     else
     {
         await Console.Out.WriteLineAsync($"Error: {reasonPhrase}");
-        ctx.ExitCode = 1;
+        return 1;
     }
 });
 

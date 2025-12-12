@@ -1,139 +1,417 @@
+<div align="center">
+
 # cv4pve-pepper
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg)](LICENSE.md)
+```
+   ______                _                      __
+  / ____/___  __________(_)___ _   _____  _____/ /_
+ / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
+/ /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
+\____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
-```text
-     ______                _                      __
-    / ____/___  __________(_)___ _   _____  _____/ /_
-   / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
-  / /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
-  \____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
-
-
-  Launching SPICE remote-viewer for Proxmox VE   (Made in Italy)
-
-  cv4pve-pepper is a part of suite cv4pve.
-  For more information visit https://www.corsinvest.it/cv4pve
-
-Usage:
-  cv4pve-pepper [options]
-
-Options:
-  --api-token <api-token>                Api token format 'USER@REALM!TOKENID=UUID'. Require Proxmox VE 6.2 or later
-  --username <username>                  User name <username>@<realm>
-  --password <password>                  The password. Specify 'file:path_file' to store password in file.
-  --validate-certificate                 Validate SSL Certificate Proxmox VE node.
-  --host <host> (REQUIRED)               The host name host[:port],host1[:port],host2[:port]
-  --vmid <vmid>                          The id or name VM/CT
-  --proxy <proxy>                        SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs
-                                         'spiceproxy', so it is up to the client to choose one. By default, we return the node to connect. If specify
-                                         http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.
-  --viewer <viewer> (REQUIRED)           Executable SPICE client remote viewer (remote-viewer executable)
-  --viewer-options <viewer-options>      Send options directly SPICE Viewer (quote value).
-  --start-or-resume                      Run stopped or paused VM
-  --wait-for-startup <wait-for-startup>  Wait sec. for startup VM [default: 5]
-  --version                              Show version information
-  --debug                                Show debug information
-  -?, -h, --help                         Show help and usage information
+Launching SPICE Remote Viewer for Proxmox VE (Made in Italy)
 ```
 
-## Copyright and License
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg?style=flat-square)](LICENSE.md)
+[![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-pepper.svg?style=flat-square)](https://github.com/Corsinvest/cv4pve-pepper/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/Corsinvest/cv4pve-pepper/total.svg?style=flat-square&logo=download)](https://github.com/Corsinvest/cv4pve-pepper/releases)
 
-Copyright: Corsinvest Srl
-For licensing details please visit [LICENSE.md](LICENSE.md)
+</div>
 
-## Commercial Support
+---
 
-This software is part of a suite of tools called cv4pve-tools. If you want commercial support, visit the [site](https://www.corisnvest.it/cv4pve)
+## Quick Start
 
-## Introduction
+```bash
+# Download latest release from: https://github.com/Corsinvest/cv4pve-pepper/releases
+wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-linux-x64.zip
+unzip cv4pve-pepper-linux-x64.zip
+chmod +x cv4pve-pepper
 
-Launching SPICE remote-viewer having access VM running on Proxmox VE.
-
-this software aims to simplify run SPICE client from Proxmox VE using command line. The reasons are:
-
-* Proxmox VE uses tickets that expire
-* do not use graphical interface (GUI)
-* no download .vv file to run remove viewer
-* use a simple client
-
-## Main features
-
-* Completely written in C#
-* Use native api REST Proxmox VE (library C#)
-* Independent os (Windows, Linux, Macosx)
-* Installation unzip file extract binary
-* Not require installation in Proxmox VE
-* Execute out side Proxmox VE
-* Not require Web login
-* Support multiple host for HA in --host parameter es. host[:port],host1[:port],host2[:port]
-* Start or Resume VM on connection
-* Check-Update and Upgrade application
-* Use Api token --api-token parameter
-* Send options directly to viewer
-* Execution with file parameter e.g. @FileParameter.parm
-* Validate certificate SSL, default not validate
-
-## Api token
-
-From version 6.2 of Proxmox VE is possible to use [Api token](https://pve.proxmox.com/pve-docs/pveum-plain.html).
-This feature permit execute Api without using user and password.
-If using **Privilege Separation** when create api token remember specify in permission.
-
-## Configuration and use
-
-E.g. install on linux 64
-
-Download last package e.g. Debian cv4pve-pepper-linux-x64.zip, on your os and install:
-
-```sh
-root@debian:~# unzip cv4pve-pepper-linux-x64.zip
+# Launch SPICE viewer for VM
+./cv4pve-pepper --host=YOUR_HOST --username=root@pam --password=YOUR_PASSWORD --vmid=100 --viewer=/usr/bin/remote-viewer
 ```
 
-This tool need basically no configuration.
+---
 
-## Run
+## Table of Contents
 
-```sh
-root@debian:~# cv4pve-pepper --host=192.168.0.100 --username=root@pam --password=fagiano --vmid 100 --viewer path-spice-viewer
+<details>
+<summary><strong>Click to expand navigation</strong></summary>
+
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [SPICE Client Setup](#-spice-client-setup)
+- [Command Reference](#-command-reference)
+- [Troubleshooting](#-troubleshooting)
+
+</details>
+
+---
+
+## Features
+
+### Core Capabilities
+
+<table>
+<tr>
+<td width="50%">
+
+#### **Performance & Reliability**
+- **Native C#** implementation
+- **Cross-platform** (Windows, Linux, macOS)
+- **API-based** operation (no root access required)
+- **Cluster support** with automatic failover
+- **Ticket management** (automatic handling of expiring tickets)
+
+</td>
+<td width="50%">
+
+#### **Advanced Management**
+- **API token** support (Proxmox VE 6.2+)
+- **Auto start/resume** stopped or paused VMs
+- **Proxy support** for reverse proxy configurations
+- **SSL validation** options
+- **Direct viewer options** pass-through
+
+</td>
+</tr>
+</table>
+
+### Why cv4pve-pepper?
+
+This tool simplifies SPICE client connections to Proxmox VE by:
+
+- **No ticket expiration hassle** - Handles Proxmox VE tickets automatically
+- **No GUI required** - Command-line execution
+- **No manual .vv file downloads** - Generates and launches automatically
+- **Simple workflow** - Single command to connect
+
+---
+
+## Installation
+
+<div align="center">
+  <img src="https://img.shields.io/badge/INSTALLATION-GUIDE-green?style=for-the-badge&logo=download" alt="Installation Guide">
+</div>
+
+ 
+### Permission
+
+| Permission | Purpose | Scope |
+|------------|---------|-------|
+| **VM.Console** | Access VM console | Virtual machines |
+| **VM.Audit** | Read VM information | Virtual machines |
+
+### Linux Installation
+
+```bash
+# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
+# Download specific version (replace VERSION with actual version like v1.9.0)
+wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-linux-x64.zip
+
+# Extract and make executable
+unzip cv4pve-pepper-linux-x64.zip
+chmod +x cv4pve-pepper
+
+# Optional: Move to system path
+sudo mv cv4pve-pepper /usr/local/bin/
 ```
 
-## SPICE client
+### Windows Installation
 
-* [Windows: virt-viewer 0.5.6 or higher,](http://www.spice-space.org/download.html)
+```powershell
+# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
+# Download specific version (replace VERSION with actual version)
+Invoke-WebRequest -Uri "https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-win-x64.zip" -OutFile "cv4pve-pepper.zip"
 
-* Linux: virt-viewer 0.5.6 or higher
+# Extract
+Expand-Archive cv4pve-pepper.zip -DestinationPath "C:\Tools\cv4pve-pepper"
 
-* [OS X (not yet working as expected): virt-viewer 0.5.7 or higher](https://www.spice-space.org/osx-client.html)
-
-## Topical path of remote viewer
-
-* Linux /usr/bin/remote-viewer
-* Windows C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe
-
-## Options of remote viewer
-
-Use --viewer-options to send options to viewer.
-E.g. --viewer-options "-f" for full screen.
-
-## Error
-
-* **no spice port**: This error appears when you have not configured the display hardware on SPICE.
-
-## Execution with file parameter
-
-Is possible execute with file parameter
-
-```sh
-root@debian:~# cv4pve-pepper @FileParameter.parm
+# Add to PATH (optional)
+$env:PATH += ";C:\Tools\cv4pve-pepper"
 ```
 
-File **FileParameter.parm**
+### macOS Installation
 
-```txt
---host=192.168.0.100
---username=root@pam
---password=fagiano
---vmid 100
---viewer path-spice-viewer
+```bash
+# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
+# Download specific version (replace VERSION with actual version)
+wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-osx-x64.zip
+unzip cv4pve-pepper-osx-x64.zip
+chmod +x cv4pve-pepper
+
+# Move to applications
+sudo mv cv4pve-pepper /usr/local/bin/
 ```
+
+---
+
+## Usage
+
+<div align="center">
+  <img src="https://img.shields.io/badge/USAGE-EXAMPLES-orange?style=for-the-badge&logo=terminal" alt="Usage Examples">
+</div>
+
+### Basic Connection
+
+```bash
+# Connect to VM using username/password
+cv4pve-pepper --host=192.168.1.100 --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer
+
+# Connect using API token (recommended)
+cv4pve-pepper --host=192.168.1.100 --api-token=user@pve!token1=uuid-here --vmid=100 --viewer=/usr/bin/remote-viewer
+```
+
+### Advanced Options
+
+```bash
+# Auto-start stopped VM and connect
+cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --start-or-resume
+
+# Connect with fullscreen viewer
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --viewer-options="-f"
+
+# Connect using VM name instead of ID
+cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=webserver --viewer=/usr/bin/remote-viewer
+
+# Use with reverse proxy
+cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --proxy=https://spice.company.com:3128
+```
+
+### High Availability Cluster
+
+```bash
+# Multiple hosts for HA failover
+cv4pve-pepper --host=pve1.local:8006,pve2.local:8006,pve3.local:8006 --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer
+```
+
+### Using Parameter Files
+
+```bash
+# Create parameter file
+cat > vm-connection.conf <<EOF
+--host=192.168.1.100
+--api-token=user@pve!token=uuid-here
+--vmid=100
+--viewer=/usr/bin/remote-viewer
+--viewer-options=-f
+--start-or-resume
+EOF
+
+# Execute with parameter file
+cv4pve-pepper @vm-connection.conf
+```
+
+---
+
+## SPICE Client Setup
+
+<div align="center">
+  <img src="https://img.shields.io/badge/SPICE-CLIENT-blue?style=for-the-badge&logo=display" alt="SPICE Client">
+</div>
+
+### Installation
+
+<details>
+<summary><strong>Linux (Debian/Ubuntu)</strong></summary>
+
+```bash
+sudo apt-get update
+sudo apt-get install virt-viewer
+```
+
+**Path**: `/usr/bin/remote-viewer`
+
+</details>
+
+<details>
+<summary><strong>Linux (RHEL/CentOS/Fedora)</strong></summary>
+
+```bash
+sudo dnf install virt-viewer
+# or
+sudo yum install virt-viewer
+```
+
+**Path**: `/usr/bin/remote-viewer`
+
+</details>
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+Download from [SPICE Space](http://www.spice-space.org/download.html)
+
+**Typical Path**: `C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe`
+
+**Minimum Version**: virt-viewer 0.5.6 or higher
+
+</details>
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+Download from [SPICE Space macOS Client](https://www.spice-space.org/osx-client.html)
+
+**Minimum Version**: virt-viewer 0.5.7 or higher
+
+**Note**: macOS support may have limitations
+
+</details>
+
+### Viewer Options
+
+Pass options directly to the SPICE viewer using `--viewer-options`:
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `-f` | Fullscreen mode | `--viewer-options="-f"` |
+| `-t` | Set window title | `--viewer-options="-t 'My VM'"` |
+| `--debug` | Enable viewer debug | `--viewer-options="--debug"` |
+
+---
+
+## Command Reference
+
+<div align="center">
+  <img src="https://img.shields.io/badge/COMMAND-REFERENCE-navy?style=for-the-badge&logo=terminal" alt="Command Reference">
+</div>
+
+### Authentication Options
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `--host` | Proxmox host(s) (required) | `--host=pve.local:8006` |
+| `--username` | Username@realm | `--username=root@pam` |
+| `--password` | Password or file | `--password=secret` or `--password=file:/etc/cv4pve/password` |
+| `--api-token` | API token | `--api-token=user@realm!token=uuid` |
+
+### VM Selection
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `--vmid` | VM/CT ID or name | `--vmid=100` or `--vmid=webserver` |
+
+### SPICE Options
+
+| Parameter | Description | Required |
+|-----------|-------------|----------|
+| `--viewer` | Path to remote-viewer executable | Yes |
+| `--viewer-options` | Options to pass to viewer | No |
+| `--proxy` | SPICE proxy server URL | No |
+
+### VM Control
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `--start-or-resume` | Start stopped or resume paused VM | `false` |
+| `--wait-for-startup` | Seconds to wait for VM startup | `5` |
+
+### Security Options
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `--validate-certificate` | Validate SSL certificate | `false` |
+
+### Output Options
+
+| Parameter | Description |
+|-----------|-------------|
+| `--debug` | Enable debug output |
+| `--version` | Show version information |
+| `-h, --help` | Show help and usage |
+
+---
+
+## Troubleshooting
+
+<div align="center">
+  <img src="https://img.shields.io/badge/TROUBLESHOOTING-HELP-red?style=for-the-badge&logo=tools" alt="Troubleshooting">
+</div>
+
+### Common Issues
+
+<details>
+<summary><strong>Error: "no spice port"</strong></summary>
+
+**Cause**: Display hardware not configured for SPICE
+
+**Solution**:
+1. Open VM hardware settings in Proxmox VE
+2. Change Display to "SPICE (qxl)"
+3. Restart the VM
+4. Try connecting again
+
+</details>
+
+<details>
+<summary><strong>Error: "Authentication failed"</strong></summary>
+
+**Solution**:
+```bash
+# Verify credentials
+cv4pve-pepper --host=pve.local --username=root@pam --password=test --vmid=100 --viewer=/usr/bin/remote-viewer --debug
+
+# Check API token format
+cv4pve-pepper --host=pve.local --api-token=user@realm!tokenid=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --debug
+```
+
+</details>
+
+<details>
+<summary><strong>Error: "Connection timeout"</strong></summary>
+
+**Check connectivity**:
+```bash
+# Test network connectivity
+ping pve.local
+telnet pve.local 8006
+
+# Try with IP address instead
+cv4pve-pepper --host=192.168.1.100 --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer
+
+# Enable SSL validation if needed
+cv4pve-pepper --host=pve.local --username=root@pam --password=secret --validate-certificate --vmid=100 --viewer=/usr/bin/remote-viewer
+```
+
+</details>
+
+<details>
+<summary><strong>Viewer not found</strong></summary>
+
+**Find viewer path**:
+```bash
+# Linux
+which remote-viewer
+# Common path: /usr/bin/remote-viewer
+
+# Windows (PowerShell)
+Get-Command remote-viewer
+# Common path: C:\Program Files\VirtViewer v*\bin\remote-viewer.exe
+```
+
+</details>
+
+### Debug Mode
+
+Enable detailed logging:
+
+```bash
+cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --debug
+```
+
+---
+
+## Support
+
+Professional support and consulting available through [Corsinvest](https://www.corsinvest.it/cv4pve).
+
+---
+
+<div align="center">
+  <sub>Part of <a href="https://www.corsinvest.it/cv4pve">cv4pve</a> suite | Made with ❤️ in Italy by <a href="https://www.corsinvest.it">Corsinvest</a></sub>
+  <br>
+  <sub>Copyright © Corsinvest Srl</sub>
+</div>

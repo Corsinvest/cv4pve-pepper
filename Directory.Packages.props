@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Console" Version="9.1.0" />
+  </ItemGroup>
+</Project>

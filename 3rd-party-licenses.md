@@ -9,8 +9,5 @@ However, includes several third-party Open-Source libraries, which are licensed 
 [Corsinvest ProxmoxVE Api](https://github.com/Corsinvest/cv4pve-api-dotnet)
 License: GPLv3
 
-[Corsinvest ProxmoxVE Api Extension](https://github.com/Corsinvest/cv4pve-api-dotnet)
-License: GPLv3
-
 [Dotnet Core](https://github.com/dotnet/core)
 License: MIT
