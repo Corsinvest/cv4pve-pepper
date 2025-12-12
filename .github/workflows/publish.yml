@@ -11,3 +11,4 @@ jobs:
     with:
       project-name: cv4pve-pepper
       project-path: src/Corsinvest.ProxmoxVE.Pepper/Corsinvest.ProxmoxVE.Pepper.csproj
+      winget-id: Corsinvest.cv4pve.pepper
