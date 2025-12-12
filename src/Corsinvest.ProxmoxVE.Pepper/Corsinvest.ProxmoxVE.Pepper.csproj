@@ -1,25 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <LangVersion>latest</LangVersion>
-    <Version>1.8.0</Version>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>cv4pve-pepper</AssemblyName>
-    <Company>Corsinvest Srl</Company>
-    <Authors>Corsinvest Srl</Authors>
-    <Copyright>Corsinvest Srl</Copyright>
-    <Product>Corsinvest Launching SPICE for Proxmox VE</Product>
     <AssemblyTitle>Corsinvest Launching SPICE for Proxmox VE</AssemblyTitle>
     <Description>Corsinvest Launching SPICE for Proxmox VE</Description>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
-    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <ProjectReference
-    Include="..\..\..\cv4pve-api-dotnet\src\Corsinvest.ProxmoxVE.Api.Shell\Corsinvest.ProxmoxVE.Api.Shell.csproj"
-    /> -->
-    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Shell" Version="8.3.3" />
+    <PackageReference Include="Corsinvest.ProxmoxVE.Api.Console" />
   </ItemGroup>
 </Project>
