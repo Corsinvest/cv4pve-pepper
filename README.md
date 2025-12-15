@@ -1,5 +1,3 @@
-<div align="center">
-
 # cv4pve-pepper
 
 ```
@@ -15,8 +13,6 @@ Launching SPICE Remote Viewer for Proxmox VE (Made in Italy)
 [![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg?style=flat-square)](LICENSE.md)
 [![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-pepper.svg?style=flat-square)](https://github.com/Corsinvest/cv4pve-pepper/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Corsinvest/cv4pve-pepper/total.svg?style=flat-square&logo=download)](https://github.com/Corsinvest/cv4pve-pepper/releases)
-
-</div>
 
 ---
 
@@ -34,29 +30,9 @@ chmod +x cv4pve-pepper
 
 ---
 
-## Table of Contents
-
-<details>
-<summary><strong>Click to expand navigation</strong></summary>
-
-- [Features](#-features)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [SPICE Client Setup](#-spice-client-setup)
-- [Command Reference](#-command-reference)
-- [Troubleshooting](#-troubleshooting)
-
-</details>
-
----
-
 ## Features
 
 ### Core Capabilities
-
-<table>
-<tr>
-<td width="50%">
 
 #### **Performance & Reliability**
 - **Native C#** implementation
@@ -65,19 +41,12 @@ chmod +x cv4pve-pepper
 - **Cluster support** with automatic failover
 - **Ticket management** (automatic handling of expiring tickets)
 
-</td>
-<td width="50%">
-
 #### **Advanced Management**
 - **API token** support (Proxmox VE 6.2+)
 - **Auto start/resume** stopped or paused VMs
 - **Proxy support** for reverse proxy configurations
 - **SSL validation** options
 - **Direct viewer options** pass-through
-
-</td>
-</tr>
-</table>
 
 ### Why cv4pve-pepper?
 
@@ -91,10 +60,6 @@ This tool simplifies SPICE client connections to Proxmox VE by:
 ---
 
 ## Installation
-
-<div align="center">
-  <img src="https://img.shields.io/badge/INSTALLATION-GUIDE-green?style=for-the-badge&logo=download" alt="Installation Guide">
-</div>
 
  
 ### Permission
@@ -150,10 +115,6 @@ sudo mv cv4pve-pepper /usr/local/bin/
 
 ## Usage
 
-<div align="center">
-  <img src="https://img.shields.io/badge/USAGE-EXAMPLES-orange?style=for-the-badge&logo=terminal" alt="Usage Examples">
-</div>
-
 ### Basic Connection
 
 ```bash
@@ -207,10 +168,6 @@ cv4pve-pepper @vm-connection.conf
 ---
 
 ## SPICE Client Setup
-
-<div align="center">
-  <img src="https://img.shields.io/badge/SPICE-CLIENT-blue?style=for-the-badge&logo=display" alt="SPICE Client">
-</div>
 
 ### Installation
 
@@ -275,10 +232,6 @@ Pass options directly to the SPICE viewer using `--viewer-options`:
 
 ## Command Reference
 
-<div align="center">
-  <img src="https://img.shields.io/badge/COMMAND-REFERENCE-navy?style=for-the-badge&logo=terminal" alt="Command Reference">
-</div>
-
 ### Authentication Options
 
 | Parameter | Description | Example |
@@ -326,10 +279,6 @@ Pass options directly to the SPICE viewer using `--viewer-options`:
 ---
 
 ## Troubleshooting
-
-<div align="center">
-  <img src="https://img.shields.io/badge/TROUBLESHOOTING-HELP-red?style=for-the-badge&logo=tools" alt="Troubleshooting">
-</div>
 
 ### Common Issues
 
@@ -410,8 +359,6 @@ Professional support and consulting available through [Corsinvest](https://www.c
 
 ---
 
-<div align="center">
-  <sub>Part of <a href="https://www.corsinvest.it/cv4pve">cv4pve</a> suite | Made with ❤️ in Italy by <a href="https://www.corsinvest.it">Corsinvest</a></sub>
-  <br>
-  <sub>Copyright © Corsinvest Srl</sub>
-</div>
+Part of [cv4pve](https://www.corsinvest.it/cv4pve) suite | Made with ❤️ in Italy by [Corsinvest](https://www.corsinvest.it)
+
+Copyright © Corsinvest Srl
