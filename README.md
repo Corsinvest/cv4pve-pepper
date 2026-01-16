@@ -86,10 +86,19 @@ sudo mv cv4pve-pepper /usr/local/bin/
 
 ### Windows Installation
 
+#### Option 1: Winget (Recommended)
+
+```powershell
+# Install using Windows Package Manager
+winget install Corsinvest.cv4pve.pepper
+```
+
+#### Option 2: Manual Installation
+
 ```powershell
 # Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
 # Download specific version (replace VERSION with actual version)
-Invoke-WebRequest -Uri "https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-win-x64.zip" -OutFile "cv4pve-pepper.zip"
+Invoke-WebRequest -Uri "https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper.exe-win-x64.zip" -OutFile "cv4pve-pepper.zip"
 
 # Extract
 Expand-Archive cv4pve-pepper.zip -DestinationPath "C:\Tools\cv4pve-pepper"
