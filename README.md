@@ -368,6 +368,12 @@ Professional support and consulting available through [Corsinvest](https://www.c
 
 ---
 
+## Desktop Experience
+
+If you prefer a graphical interface to browse and connect to your VMs, check out **[cv4pve-vdi](https://github.com/Corsinvest/cv4pve-vdi)** — the desktop VDI client for Proxmox VE with card/list view, filters, power control and SPICE/RDP support.
+
+---
+
 Part of [cv4pve](https://www.corsinvest.it/cv4pve) suite | Made with ❤️ in Italy by [Corsinvest](https://www.corsinvest.it)
 
 Copyright © Corsinvest Srl
