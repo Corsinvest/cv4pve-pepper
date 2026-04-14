@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.10.0] - 2026-04-14
+## [2.0.0] - 2026-04-14
 
 ### Added
 - VNC console support via `--vnc` flag — connect to any running VM or container without SPICE display configuration
