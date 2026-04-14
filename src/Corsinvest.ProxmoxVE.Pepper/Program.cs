@@ -3,150 +3,112 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using Corsinvest.ProxmoxVE.Api.Console.Helpers;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
 using Corsinvest.ProxmoxVE.Api.Shared.Models.Vm;
 using Microsoft.Extensions.Logging;
 
-var app = ConsoleHelper.CreateApp("cv4pve-pepper", "Launching SPICE remote-viewer for Proxmox VE");
-var loggerFactory = ConsoleHelper.CreateLoggerFactory<Program>(app.GetLogLevelFromDebug());
+namespace Corsinvest.ProxmoxVE.Pepper;
 
-var optVmId = app.VmIdOrNameOption();
-
-var optProxy = app.AddOption<string>("--proxy",
-                                     @"SPICE proxy server. This can be used by the client to specify the proxy server." +
-                                      " All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one." +
-                                      " By default, we return the node to connect." +
-                                      " If specify http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.");
-
-var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer (remote-viewer executable)")
-                         .AddValidatorExistFile();
-optRemoteViewer.Required = true;
-
-var optViewerOptions = app.AddOption<string>("--viewer-options", "Send options directly SPICE Viewer (quote value).");
-var optStartOrResume = app.AddOption<bool>("--start-or-resume", "Run stopped or paused VM");
-
-var optWaitForStartup = app.AddOption<int>("--wait-for-startup", "Wait sec. for startup VM");
-optWaitForStartup.DefaultValueFactory = (_) => 5;
-//        opt.DefaultValueFactory = (_) => TableGenerator.Output.Text;
-
-app.SetAction(async (action) =>
+internal partial class Program
 {
-    var client = await app.ClientTryLoginAsync(loggerFactory);
-    var proxy = action.GetValue(optProxy);
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    private static extern bool AttachConsole(int dwProcessId);
 
-    if (string.IsNullOrWhiteSpace(proxy)) { proxy = client.Host; }
-    var vmId = action.GetValue(optVmId);
-
-    var vm = await client.GetVmAsync(vmId);
-    if (action.GetValue(optStartOrResume) && (vm.IsStopped || vm.IsPaused))
+    private static async Task<int> Main(string[] args)
     {
-        var status = vm.IsStopped
-                        ? VmStatus.Start
-                        : VmStatus.Resume;
+        // On Windows (WinExe), re-attach to the parent console if launched from a terminal
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) { AttachConsole(-1); }
 
-        if (app.DebugIsActive())
+        var app = ConsoleHelper.CreateApp("Launching SPICE/VNC remote-viewer for Proxmox VE");
+        var loggerFactory = ConsoleHelper.CreateLoggerFactory<Program>(app.GetLogLevelFromDebug());
+
+        var optVmId = app.VmIdOrNameOption();
+
+        var optProxy = app.AddOption<string>("--proxy",
+                                             "SPICE proxy server. This can be used by the client to specify the proxy server." +
+                                             " All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one." +
+                                             " By default, we return the node to connect." +
+                                             " If specify http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.");
+
+        var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer (remote-viewer executable)")
+                                 .AddValidatorExistFile();
+        optRemoteViewer.Required = true;
+
+        var optViewerOptions = app.AddOption<string>("--viewer-options", "Send options directly SPICE Viewer (quote value).");
+        var optStartOrResume = app.AddOption<bool>("--start-or-resume", "Run stopped or paused VM");
+        var optVnc = app.AddOption<bool>("--vnc", "Use VNC instead of SPICE (works on any running VM/CT without display configuration)");
+
+        var optWaitForStartup = app.AddOption<int>("--wait-for-startup", "Wait sec. for startup VM");
+        optWaitForStartup.DefaultValueFactory = (_) => 5;
+
+        app.SetAction(async (action) =>
         {
-            await Console.Out.WriteLineAsync($"VM is {(vm.IsStopped ? "stopped" : "paused")}. {status} now!");
-        }
+            var client = await app.ClientTryLoginAsync(loggerFactory);
+            var vmId = action.GetValue(optVmId);
 
-        //start VM
-        var result = await VmHelper.ChangeStatusVmAsync(client, vm.Node, vm.VmType, vm.VmId, status);
-        if (!result.IsSuccessStatusCode)
-        {
-            await Console.Out.WriteLineAsync($"Error with code: {result.StatusCode}, phrase {result.ReasonPhrase}!");
-        }
-        await client.WaitForTaskToFinishAsync(result, timeout: action.GetValue(optWaitForStartup) * 1000);
+            var output = app.DebugIsActive() ? Console.Out : null;
 
-        //check VM is running
-        vm = await client.GetVmAsync(vmId);
-        if (app.DebugIsActive()) { await Console.Out.WriteLineAsync($"VM is {vm.Status}."); }
-    }
-
-    var (success, reasonPhrase, content) = vm.VmType switch
-    {
-        VmType.Qemu => await client.Nodes[vm.Node].Qemu[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy),
-        VmType.Lxc => await client.Nodes[vm.Node].Lxc[vm.VmId].Spiceproxy.GetSpiceFileVVAsync(proxy),
-        _ => throw new InvalidEnumArgumentException(),
-    };
-
-    if (success)
-    {
-        //proxy force
-        if (new Regex(@"^(http|https|)://.*$").IsMatch(proxy))
-        {
-            var lines = content.Split("\n");
-            for (int i = 0; i < lines.Length; i++)
+            var vm = await client.GetVmAsync(vmId);
+            if (action.GetValue(optStartOrResume) && (vm.IsStopped || vm.IsPaused))
             {
-                if (lines[i].StartsWith("proxy="))
+                var status = vm.IsStopped ? VmStatus.Start : VmStatus.Resume;
+
+                if (output != null) { await output.WriteLineAsync($"VM is {(vm.IsStopped ? "stopped" : "paused")}. {status} now!"); }
+
+                var result = await VmHelper.ChangeStatusVmAsync(client, vm.Node, vm.VmType, vm.VmId, status);
+                if (!result.IsSuccessStatusCode)
                 {
-                    lines[i] = $"proxy={proxy}";
-                    break;
+                    await Console.Out.WriteLineAsync($"Error with code: {result.StatusCode}, phrase {result.ReasonPhrase}!");
                 }
-            }
-            content = string.Join("\n", lines);
+                await client.WaitForTaskToFinishAsync(result, timeout: action.GetValue(optWaitForStartup) * 1000);
 
-            if (app.DebugIsActive())
+                vm = await client.GetVmAsync(vmId);
+                if (output != null) { await output.WriteLineAsync($"VM is {vm.Status}."); }
+            }
+
+            var remoteViewer = action.GetValue(optRemoteViewer)!;
+            var viewerOptions = action.GetValue(optViewerOptions) ?? string.Empty;
+
+            if (action.GetValue(optVnc))
             {
-                await Console.Out.WriteLineAsync($"Replace Proxy: {proxy}");
-                await Console.Out.WriteLineAsync(content);
+                var (Error, FileName, Bridge) = await RemoteViewerHelper.PrepareVncAsync(client,
+                                                                                         vm.Node,
+                                                                                         vm.VmType,
+                                                                                         vm.VmId,
+                                                                                         output);
+                if (Error != null) { await Console.Out.WriteLineAsync($"Error: {Error}"); return 1; }
+                if (!app.DryRunIsActive())
+                {
+                    await using (Bridge)
+                    {
+                        return RemoteViewerHelper.Launch(remoteViewer, FileName!, viewerOptions, true, output);
+                    }
+                }
+
+                return 0;
             }
-        }
+            else
+            {
+                var (Error, FileName) = await RemoteViewerHelper.PrepareSpiceAsync(client,
+                                                                                   vm.Node,
+                                                                                   vm.VmType,
+                                                                                   vm.VmId,
+                                                                                   action.GetValue(optProxy),
+                                                                                   output);
+                if (Error != null) { await Console.Out.WriteLineAsync($"Error: {Error}"); return 1; }
+                if (!app.DryRunIsActive())
+                {
+                    return RemoteViewerHelper.Launch(remoteViewer, FileName!, viewerOptions, false, output);
+                }
 
-        var fileName = Path.GetTempFileName().Replace(".tmp", ".vv");
-        File.WriteAllText(fileName, content);
-        var startInfo = new ProcessStartInfo
-        {
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            RedirectStandardOutput = false,
-        };
+                return 0;
+            }
+        });
 
-        var viewerOptions = action.GetValue(optViewerOptions);
-        var remoteViewer = action.GetValue(optRemoteViewer);
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            startInfo.FileName = "/bin/bash";
-            startInfo.Arguments = $"-c \"{remoteViewer} {fileName} {viewerOptions}\"";
-        }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            startInfo.FileName = $"\"{remoteViewer}\"";
-            startInfo.Arguments = $"\"{fileName}\" {viewerOptions}";
-        }
-
-        var process = new Process
-        {
-            StartInfo = startInfo
-        };
-
-        if (app.DebugIsActive())
-        {
-            await Console.Out.WriteLineAsync($"Run FileName: {process.StartInfo.FileName}");
-            await Console.Out.WriteLineAsync($"Run Arguments: {process.StartInfo.Arguments}");
-        }
-
-        if (!app.DryRunIsActive())
-        {
-            process.Start();
-            return !process.HasExited || process.ExitCode == 0
-                    ? 0
-                    : 1;
-        }
-
-        return 0;
+        return await app.ExecuteAppAsync(args, loggerFactory.CreateLogger<Program>());
     }
-    else
-    {
-        await Console.Out.WriteLineAsync($"Error: {reasonPhrase}");
-        return 1;
-    }
-});
-
-return await app.ExecuteAppAsync(args, loggerFactory.CreateLogger(typeof(Program)));
+}

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType Condition="'$(OS)' == 'Windows_NT'">WinExe</OutputType>
+    <OutputType Condition="'$(OS)' != 'Windows_NT'">Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>cv4pve-pepper</AssemblyName>
     <AssemblyTitle>Corsinvest Launching SPICE for Proxmox VE</AssemblyTitle>
