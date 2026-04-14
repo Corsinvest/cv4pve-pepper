@@ -6,12 +6,13 @@ on:
       - 'v*'
 
 jobs:
-  call-publish:
-    uses: Corsinvest/.github/.github/workflows/cv4pve-cli-publish.yml@main
+  publish:
+    uses: Corsinvest/.github/.github/workflows/cv4pve-tools-publish.yml@main
     secrets:
-      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+
     with:
       project-name: cv4pve-pepper
       project-path: src/Corsinvest.ProxmoxVE.Pepper/Corsinvest.ProxmoxVE.Pepper.csproj
-      winget-id: Corsinvest.cv4pve.pepper

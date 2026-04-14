@@ -4,6 +4,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Console" Version="9.1.0" />
+    <PackageVersion Include="Corsinvest.ProxmoxVE.Api.Console" Version="9.1.14" />
   </ItemGroup>
 </Project>

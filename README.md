@@ -7,184 +7,138 @@
 / /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
 \____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
-Launching SPICE Remote Viewer for Proxmox VE (Made in Italy)
+Launching SPICE/VNC Remote Viewer for Proxmox VE (Made in Italy)
 ```
 
 [![License](https://img.shields.io/github/license/Corsinvest/cv4pve-pepper.svg?style=flat-square)](LICENSE.md)
 [![Release](https://img.shields.io/github/release/Corsinvest/cv4pve-pepper.svg?style=flat-square)](https://github.com/Corsinvest/cv4pve-pepper/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/Corsinvest/cv4pve-pepper/total.svg?style=flat-square&logo=download)](https://github.com/Corsinvest/cv4pve-pepper/releases)
+[![WinGet](https://img.shields.io/winget/v/Corsinvest.cv4pve.pepper?style=flat-square&logo=windows)](https://winstall.app/apps/Corsinvest.cv4pve.pepper)
+[![AUR](https://img.shields.io/aur/version/cv4pve-pepper?style=flat-square&logo=archlinux)](https://aur.archlinux.org/packages/cv4pve-pepper)
+
+> **SPICE and VNC console launcher for Proxmox VE** — connect to any VM or container with a single command.
+
+---
+
+## Desktop Experience
+
+If you prefer a graphical interface to browse and connect to your VMs, check out **[cv4pve-vdi](https://github.com/Corsinvest/cv4pve-vdi)** — the desktop VDI client for Proxmox VE with card/list view, filters, power control, SPICE, VNC and custom service launchers (RDP, SSH, and more).
 
 ---
 
 ## Quick Start
 
 ```bash
-# Download latest release from: https://github.com/Corsinvest/cv4pve-pepper/releases
 wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-linux-x64.zip
 unzip cv4pve-pepper-linux-x64.zip
-chmod +x cv4pve-pepper
 
-# Launch SPICE viewer for VM
-./cv4pve-pepper --host=YOUR_HOST --username=root@pam --password=YOUR_PASSWORD --vmid=100 --viewer=/usr/bin/remote-viewer
+# SPICE
+./cv4pve-pepper --host=YOUR_HOST --api-token=user@realm!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer
+
+# VNC
+./cv4pve-pepper --host=YOUR_HOST --api-token=user@realm!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --vnc
 ```
-
----
-
-## Features
-
-### Core Capabilities
-
-#### **Performance & Reliability**
-- **Native C#** implementation
-- **Cross-platform** (Windows, Linux, macOS)
-- **API-based** operation (no root access required)
-- **Cluster support** with automatic failover
-- **Ticket management** (automatic handling of expiring tickets)
-
-#### **Advanced Management**
-- **API token** support (Proxmox VE 6.2+)
-- **Auto start/resume** stopped or paused VMs
-- **Proxy support** for reverse proxy configurations
-- **SSL validation** options
-- **Direct viewer options** pass-through
-
-### Why cv4pve-pepper?
-
-This tool simplifies SPICE client connections to Proxmox VE by:
-
-- **No ticket expiration hassle** - Handles Proxmox VE tickets automatically
-- **No GUI required** - Command-line execution
-- **No manual .vv file downloads** - Generates and launches automatically
-- **Simple workflow** - Single command to connect
 
 ---
 
 ## Installation
 
- 
-### Permission
+| Platform           | Command                                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------- |
+| **Linux**          | `wget .../cv4pve-pepper-linux-x64.zip && unzip cv4pve-pepper-linux-x64.zip && chmod +x cv4pve-pepper`          |
+| **Windows WinGet** | `winget install Corsinvest.cv4pve.pepper`                                                                       |
+| **Windows manual** | Download `cv4pve-pepper-win-x64.zip` from [Releases](https://github.com/Corsinvest/cv4pve-pepper/releases)     |
+| **Arch Linux**     | `yay -S cv4pve-pepper`                                                                                          |
+| **macOS**          | `wget .../cv4pve-pepper-osx-x64.zip && unzip cv4pve-pepper-osx-x64.zip && chmod +x cv4pve-pepper`              |
 
-| Permission | Purpose | Scope |
-|------------|---------|-------|
-| **VM.Console** | Access VM console | Virtual machines |
-| **VM.Audit** | Read VM information | Virtual machines |
+All binaries on the [Releases page](https://github.com/Corsinvest/cv4pve-pepper/releases).
 
-### Linux Installation
+---
 
-```bash
-# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
-# Download specific version (replace VERSION with actual version like v1.9.0)
-wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-linux-x64.zip
+## Features
 
-# Extract and make executable
-unzip cv4pve-pepper-linux-x64.zip
-chmod +x cv4pve-pepper
+- **SPICE** console launch via `remote-viewer`
+- **VNC** console via WebSocket bridge — no firewall rules or node-side configuration required (see [VNC Console](#vnc-console))
+- **Cross-platform** — Windows, Linux, macOS
+- **Self-contained binary** — no runtime to install, copy and run
+- **API token** support (Proxmox VE 6.2+)
+- **Auto start/resume** stopped or paused VMs
+- **Cluster support** with automatic failover
+- **Proxy support** for reverse proxy configurations
+- **No ticket expiration hassle** — handles Proxmox VE tickets automatically
+- **No manual `.vv` file downloads** — generates and launches automatically
 
-# Optional: Move to system path
-sudo mv cv4pve-pepper /usr/local/bin/
-```
+---
 
-### Windows Installation
+<details>
+<summary><strong>Security &amp; Permissions</strong></summary>
 
-#### Option 1: Winget (Recommended)
+### Required Permissions
 
-```powershell
-# Install using Windows Package Manager
-winget install Corsinvest.cv4pve.pepper
-```
+| Permission | Purpose |
+|------------|---------|
+| `VM.Console` | Access VM SPICE/VNC console |
+| `VM.Audit` | Read VM information |
 
-#### Option 2: Manual Installation
-
-```powershell
-# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
-# Download specific version (replace VERSION with actual version)
-Invoke-WebRequest -Uri "https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper.exe-win-x64.zip" -OutFile "cv4pve-pepper.zip"
-
-# Extract
-Expand-Archive cv4pve-pepper.zip -DestinationPath "C:\Tools\cv4pve-pepper"
-
-# Add to PATH (optional)
-$env:PATH += ";C:\Tools\cv4pve-pepper"
-```
-
-### macOS Installation
-
-```bash
-# Check available releases at: https://github.com/Corsinvest/cv4pve-pepper/releases
-# Download specific version (replace VERSION with actual version)
-wget https://github.com/Corsinvest/cv4pve-pepper/releases/download/VERSION/cv4pve-pepper-osx-x64.zip
-unzip cv4pve-pepper-osx-x64.zip
-chmod +x cv4pve-pepper
-
-# Move to applications
-sudo mv cv4pve-pepper /usr/local/bin/
-```
+</details>
 
 ---
 
 ## Usage
 
-### Basic Connection
-
 ```bash
-# Connect to VM using username/password
+# Connect using username/password (SPICE)
 cv4pve-pepper --host=192.168.1.100 --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer
 
 # Connect using API token (recommended)
 cv4pve-pepper --host=192.168.1.100 --api-token=user@pve!token1=uuid-here --vmid=100 --viewer=/usr/bin/remote-viewer
-```
 
-### Advanced Options
+# Connect via VNC (works on any running VM/CT without SPICE display configuration)
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --vnc
 
-```bash
 # Auto-start stopped VM and connect
-cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --start-or-resume
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --start-or-resume
 
 # Connect with fullscreen viewer
 cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --viewer-options="-f"
 
 # Connect using VM name instead of ID
-cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=webserver --viewer=/usr/bin/remote-viewer
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=webserver --viewer=/usr/bin/remote-viewer
 
-# Use with reverse proxy
-cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --proxy=https://spice.company.com:3128
-```
+# Use with reverse proxy (SPICE only)
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --proxy=https://spice.company.com:3128
 
-### High Availability Cluster
-
-```bash
 # Multiple hosts for HA failover
 cv4pve-pepper --host=pve1.local:8006,pve2.local:8006,pve3.local:8006 --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer
-```
 
-### Using Parameter Files
-
-```bash
-# Create parameter file
-cat > vm-connection.conf <<EOF
---host=192.168.1.100
---api-token=user@pve!token=uuid-here
---vmid=100
---viewer=/usr/bin/remote-viewer
---viewer-options=-f
---start-or-resume
-EOF
-
-# Execute with parameter file
-cv4pve-pepper @vm-connection.conf
+# Parameter file (recommended for complex setups)
+cv4pve-pepper @/etc/cv4pve/pepper.conf
 ```
 
 ---
 
-## SPICE Client Setup
+## VNC Console
 
-### Installation
+VNC is available on all running QEMU VMs and LXC containers — **no additional configuration required** on the Proxmox VE side.
+
+cv4pve-pepper uses the Proxmox VE API to open a **WebSocket VNC tunnel**, bridges it to a local port, and launches `remote-viewer` to display the session. This means:
+
+- No direct network access to the VNC port on the node is needed
+- No firewall rules to open on the Proxmox VE host
+- The same `remote-viewer` used for SPICE is reused — no extra software required
+- Works transparently through the existing Proxmox VE API connection
+- Available on every running VM and CT regardless of display hardware configuration
+
+---
+
+## SPICE/VNC Client Setup
+
+A SPICE/VNC viewer (`remote-viewer`) must be installed.
 
 <details>
 <summary><strong>Linux (Debian/Ubuntu)</strong></summary>
 
 ```bash
-sudo apt-get update
 sudo apt-get install virt-viewer
 ```
 
@@ -197,8 +151,6 @@ sudo apt-get install virt-viewer
 
 ```bash
 sudo dnf install virt-viewer
-# or
-sudo yum install virt-viewer
 ```
 
 **Path**: `/usr/bin/remote-viewer`
@@ -208,11 +160,9 @@ sudo yum install virt-viewer
 <details>
 <summary><strong>Windows</strong></summary>
 
-Download from [SPICE Space](http://www.spice-space.org/download.html)
+Download from [SPICE Space](https://www.spice-space.org/download.html)
 
-**Typical Path**: `C:\Program Files\VirtViewer v?.?-???\bin\remote-viewer.exe`
-
-**Minimum Version**: virt-viewer 0.5.6 or higher
+**Typical path**: `C:\Program Files\VirtViewer v?-???\bin\remote-viewer.exe`
 
 </details>
 
@@ -221,156 +171,13 @@ Download from [SPICE Space](http://www.spice-space.org/download.html)
 
 Download from [SPICE Space macOS Client](https://www.spice-space.org/osx-client.html)
 
-**Minimum Version**: virt-viewer 0.5.7 or higher
-
-**Note**: macOS support may have limitations
-
 </details>
-
-### Viewer Options
-
-Pass options directly to the SPICE viewer using `--viewer-options`:
-
-| Option | Description | Example |
-|--------|-------------|---------|
-| `-f` | Fullscreen mode | `--viewer-options="-f"` |
-| `-t` | Set window title | `--viewer-options="-t 'My VM'"` |
-| `--debug` | Enable viewer debug | `--viewer-options="--debug"` |
-
----
-
-## Command Reference
-
-### Authentication Options
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `--host` | Proxmox host(s) (required) | `--host=pve.local:8006` |
-| `--username` | Username@realm | `--username=root@pam` |
-| `--password` | Password or file | `--password=secret` or `--password=file:/etc/cv4pve/password` |
-| `--api-token` | API token | `--api-token=user@realm!token=uuid` |
-
-### VM Selection
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `--vmid` | VM/CT ID or name | `--vmid=100` or `--vmid=webserver` |
-
-### SPICE Options
-
-| Parameter | Description | Required |
-|-----------|-------------|----------|
-| `--viewer` | Path to remote-viewer executable | Yes |
-| `--viewer-options` | Options to pass to viewer | No |
-| `--proxy` | SPICE proxy server URL | No |
-
-### VM Control
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `--start-or-resume` | Start stopped or resume paused VM | `false` |
-| `--wait-for-startup` | Seconds to wait for VM startup | `5` |
-
-### Security Options
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `--validate-certificate` | Validate SSL certificate | `false` |
-
-### Output Options
-
-| Parameter | Description |
-|-----------|-------------|
-| `--debug` | Enable debug output |
-| `--version` | Show version information |
-| `-h, --help` | Show help and usage |
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-<details>
-<summary><strong>Error: "no spice port"</strong></summary>
-
-**Cause**: Display hardware not configured for SPICE
-
-**Solution**:
-1. Open VM hardware settings in Proxmox VE
-2. Change Display to "SPICE (qxl)"
-3. Restart the VM
-4. Try connecting again
-
-</details>
-
-<details>
-<summary><strong>Error: "Authentication failed"</strong></summary>
-
-**Solution**:
-```bash
-# Verify credentials
-cv4pve-pepper --host=pve.local --username=root@pam --password=test --vmid=100 --viewer=/usr/bin/remote-viewer --debug
-
-# Check API token format
-cv4pve-pepper --host=pve.local --api-token=user@realm!tokenid=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --debug
-```
-
-</details>
-
-<details>
-<summary><strong>Error: "Connection timeout"</strong></summary>
-
-**Check connectivity**:
-```bash
-# Test network connectivity
-ping pve.local
-telnet pve.local 8006
-
-# Try with IP address instead
-cv4pve-pepper --host=192.168.1.100 --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer
-
-# Enable SSL validation if needed
-cv4pve-pepper --host=pve.local --username=root@pam --password=secret --validate-certificate --vmid=100 --viewer=/usr/bin/remote-viewer
-```
-
-</details>
-
-<details>
-<summary><strong>Viewer not found</strong></summary>
-
-**Find viewer path**:
-```bash
-# Linux
-which remote-viewer
-# Common path: /usr/bin/remote-viewer
-
-# Windows (PowerShell)
-Get-Command remote-viewer
-# Common path: C:\Program Files\VirtViewer v*\bin\remote-viewer.exe
-```
-
-</details>
-
-### Debug Mode
-
-Enable detailed logging:
-
-```bash
-cv4pve-pepper --host=pve.local --username=root@pam --password=secret --vmid=100 --viewer=/usr/bin/remote-viewer --debug
-```
 
 ---
 
 ## Support
 
 Professional support and consulting available through [Corsinvest](https://www.corsinvest.it/cv4pve).
-
----
-
-## Desktop Experience
-
-If you prefer a graphical interface to browse and connect to your VMs, check out **[cv4pve-vdi](https://github.com/Corsinvest/cv4pve-vdi)** — the desktop VDI client for Proxmox VE with card/list view, filters, power control and SPICE/RDP support.
 
 ---
 
