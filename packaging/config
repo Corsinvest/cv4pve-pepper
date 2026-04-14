@@ -1,0 +1,7 @@
+type=cli
+description=SPICE/VNC console launcher for Proxmox VE — connect to VMs with a single command
+long-description=Connect to VMs via SPICE with a single command.
+license=MIT
+winget-id=Corsinvest.cv4pve.pepper
+pkg-identifier=it.corsinvest.cv4pve-pepper
+homebrew-formula-class=Cv4pvePepper
