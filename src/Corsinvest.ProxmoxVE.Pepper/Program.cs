@@ -4,6 +4,7 @@
  */
 
 using System.Runtime.InteropServices;
+using Corsinvest.ProxmoxVE.Api;
 using Corsinvest.ProxmoxVE.Api.Console.Helpers;
 using Corsinvest.ProxmoxVE.Api.Extension;
 using Corsinvest.ProxmoxVE.Api.Extension.Utils;
@@ -25,14 +26,14 @@ internal partial class Program
 
         var app = ConsoleHelper.CreateApp("Launching SPICE/VNC remote-viewer for Proxmox VE");
         var loggerFactory = ConsoleHelper.CreateLoggerFactory<Program>(app.GetLogLevelFromDebug());
+        var logger = loggerFactory.CreateLogger<Program>();
 
         var optVmId = app.VmIdOrNameOption();
 
         var optProxy = app.AddOption<string>("--proxy",
-                                             "SPICE proxy server. This can be used by the client to specify the proxy server." +
-                                             " All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one." +
-                                             " By default, we return the node to connect." +
-                                             " If specify http(s)://[host]:[port] then replace proxy option in file .vv. E.g. for reverse proxy.");
+                                             "SPICE proxy: IP address or host name (no http:// and no port), reached on port 3128." +
+                                             " Every node in the cluster runs 'spiceproxy', so any node can be used." +
+                                             " Default: the host used to connect.");
 
         var optRemoteViewer = app.AddOption<string>("--viewer", "Executable SPICE client remote viewer (remote-viewer executable)")
                                  .AddValidatorExistFile();
@@ -50,24 +51,36 @@ internal partial class Program
             var client = await app.ClientTryLoginAsync(loggerFactory);
             var vmId = action.GetValue(optVmId);
 
-            var output = app.DebugIsActive() ? Console.Out : null;
+            // Follows --debug and --log-level like the API calls; secrets are masked
+            using var output = logger.IsEnabled(LogLevel.Debug) ? new LoggerTextWriter(logger) : null;
 
             var vm = await client.GetVmAsync(vmId);
             if (action.GetValue(optStartOrResume) && (vm.IsStopped || vm.IsPaused))
             {
                 var status = vm.IsStopped ? VmStatus.Start : VmStatus.Resume;
 
-                if (output != null) { await output.WriteLineAsync($"VM is {(vm.IsStopped ? "stopped" : "paused")}. {status} now!"); }
+                logger.LogDebug("VM is {State}. {Status} now!", vm.IsStopped ? "stopped" : "paused", status);
 
                 var result = await VmHelper.ChangeStatusVmAsync(client, vm.Node, vm.VmType, vm.VmId, status);
                 if (!result.IsSuccessStatusCode)
                 {
-                    await Console.Out.WriteLineAsync($"Error with code: {result.StatusCode}, phrase {result.ReasonPhrase}!");
+                    throw new InvalidOperationException($"{status} VM/CT {vm.VmId} failed: {result.ReasonPhrase}");
                 }
-                await client.WaitForTaskToFinishAsync(result, timeout: action.GetValue(optWaitForStartup) * 1000);
+                var waitForStartup = action.GetValue(optWaitForStartup);
+                await client.WaitForTaskToFinishAsync(result, timeout: waitForStartup * 1000);
 
-                vm = await client.GetVmAsync(vmId);
-                if (output != null) { await output.WriteLineAsync($"VM is {vm.Status}."); }
+                // Read the task result: /cluster/resources reports the new status only after a few seconds
+                var task = result.ToData<string>();
+                if (await client.TaskIsRunningAsync(task))
+                {
+                    logger.LogDebug("{Status} still running after {Seconds}s, continuing.", status, waitForStartup);
+                }
+                else
+                {
+                    var exitStatus = await client.GetExitStatusTaskAsync(task);
+                    if (exitStatus != "OK") { throw new InvalidOperationException($"{status} VM/CT {vm.VmId} failed: {exitStatus}"); }
+                    logger.LogDebug("{Status} VM/CT {VmId}: {ExitStatus}.", status, vm.VmId, exitStatus);
+                }
             }
 
             var remoteViewer = action.GetValue(optRemoteViewer)!;
@@ -80,15 +93,18 @@ internal partial class Program
                                                                                          vm.VmType,
                                                                                          vm.VmId,
                                                                                          output);
-                if (Error != null) { await Console.Out.WriteLineAsync($"Error: {Error}"); return 1; }
-                if (!app.DryRunIsActive())
+                if (Error != null) { throw new InvalidOperationException(Error); }
+
+                await using (Bridge)
                 {
-                    await using (Bridge)
+                    if (!app.DryRunIsActive())
                     {
                         return RemoteViewerHelper.Launch(remoteViewer, FileName!, viewerOptions, true, output);
                     }
                 }
 
+                // The viewer deletes the .vv (delete-this-file=1); with --dry-run it is never launched
+                File.Delete(FileName!);
                 return 0;
             }
             else
@@ -99,16 +115,18 @@ internal partial class Program
                                                                                    vm.VmId,
                                                                                    action.GetValue(optProxy),
                                                                                    output);
-                if (Error != null) { await Console.Out.WriteLineAsync($"Error: {Error}"); return 1; }
+                if (Error != null) { throw new InvalidOperationException(Error); }
                 if (!app.DryRunIsActive())
                 {
                     return RemoteViewerHelper.Launch(remoteViewer, FileName!, viewerOptions, false, output);
                 }
 
+                // The viewer deletes the .vv (delete-this-file=1); with --dry-run it is never launched
+                File.Delete(FileName!);
                 return 0;
             }
         });
 
-        return await app.ExecuteAppAsync(args, loggerFactory.CreateLogger<Program>());
+        return await app.ExecuteAppAsync(args, logger);
     }
 }
