@@ -8,3 +8,8 @@ However, includes several third-party Open-Source libraries, which are licensed 
 
 [Corsinvest.ProxmoxVE.Api.Console](https://github.com/Corsinvest/cv4pve-api-dotnet)
 License: MIT
+
+## Artwork
+
+The monitor pictogram in `icon.svg` / `icon.png` comes from [Lucide](https://lucide.dev) (icon `monitor-play`)
+License: ISC

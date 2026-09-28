@@ -64,7 +64,7 @@ All binaries on the [Releases page](https://github.com/Corsinvest/cv4pve-pepper/
 - **API token** support (Proxmox VE 6.2+)
 - **Auto start/resume** stopped or paused VMs
 - **Cluster support** with automatic failover
-- **Proxy support** for reverse proxy configurations
+- **SPICE proxy** choice: any cluster node (IP or host name)
 - **No ticket expiration hassle** — handles Proxmox VE tickets automatically
 - **No manual `.vv` file downloads** — generates and launches automatically
 
@@ -105,8 +105,8 @@ cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --view
 # Connect using VM name instead of ID
 cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=webserver --viewer=/usr/bin/remote-viewer
 
-# Use with reverse proxy (SPICE only)
-cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --proxy=https://spice.company.com:3128
+# Use another node as SPICE proxy (IP or host name, port 3128)
+cv4pve-pepper --host=pve.local --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer --proxy=pve2.local
 
 # Multiple hosts for HA failover
 cv4pve-pepper --host=pve1.local:8006,pve2.local:8006,pve3.local:8006 --api-token=user@pve!token=uuid --vmid=100 --viewer=/usr/bin/remote-viewer

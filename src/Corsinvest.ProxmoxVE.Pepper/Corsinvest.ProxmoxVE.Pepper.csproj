@@ -1,11 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType Condition="'$(OS)' == 'Windows_NT'">WinExe</OutputType>
-    <OutputType Condition="'$(OS)' != 'Windows_NT'">Exe</OutputType>
+    <!-- WinExe on Windows (no console window, see AttachConsole in Program.cs).
+         Decided by the target RID, not by the build OS: releases are built on Linux -->
+    <OutputType>Exe</OutputType>
+    <OutputType Condition="$(RuntimeIdentifier.StartsWith('win')) Or ('$(RuntimeIdentifier)' == '' And '$(OS)' == 'Windows_NT')">WinExe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>cv4pve-pepper</AssemblyName>
-    <AssemblyTitle>Corsinvest Launching SPICE for Proxmox VE</AssemblyTitle>
-    <Description>Corsinvest Launching SPICE for Proxmox VE</Description>
+    <Product>Corsinvest for Proxmox VE Pepper</Product>
+    <AssemblyTitle>Corsinvest for Proxmox VE Pepper</AssemblyTitle>
+    <Description>SPICE/VNC console launcher for Proxmox VE — connect to VMs with a single command</Description>
+    <ApplicationIcon>..\..\icon.ico</ApplicationIcon>
+    <IsPackable>false</IsPackable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PredefinedCulturesOnly>false</PredefinedCulturesOnly>
   </PropertyGroup>
 
   <ItemGroup>
