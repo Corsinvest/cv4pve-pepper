@@ -1,0 +1,28 @@
+---
+title: Connection
+description: How cv4pve-pepper connects to a Proxmox VE cluster, and how to keep the options in a response file.
+---
+
+import CliConnection from '@corsinvest/cv4pve-docs-theme/components/CliConnection.astro';
+import CliResponseFiles from '@corsinvest/cv4pve-docs-theme/components/CliResponseFiles.astro';
+
+cv4pve-pepper talks to the Proxmox VE REST API of any node of the cluster. Create the user and API token
+first — see [Permissions](/cv4pve-pepper/permissions/).
+
+## Options
+
+<CliConnection user="pepper@pve" />
+
+## Response files
+
+Every console you open repeats the same connection and viewer path: keep them in a file.
+
+<CliResponseFiles
+  tool="cv4pve-pepper"
+  user="pepper@pve"
+  token="console"
+  extra={['# Path of remote-viewer on this computer', '--viewer=/usr/bin/remote-viewer']}
+  run="--vmid=100"
+/>
+
+For one file per VM, opened from a desktop icon, see [Desktop shortcut](/cv4pve-pepper/desktop-shortcut/).

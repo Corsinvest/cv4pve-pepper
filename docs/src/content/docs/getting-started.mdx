@@ -5,7 +5,6 @@ description: Install cv4pve-pepper and remote-viewer, connect to a Proxmox VE cl
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import CliInstall from '@corsinvest/cv4pve-docs-theme/components/CliInstall.astro';
-import CliConnection from '@corsinvest/cv4pve-docs-theme/components/CliConnection.astro';
 
 cv4pve-pepper runs **on the computer where the console should appear** and talks only to the Proxmox VE
 REST API. Nothing is installed on the nodes.
@@ -48,22 +47,19 @@ The same viewer serves SPICE and VNC. VNC clients such as TigerVNC do not work: 
   </TabItem>
 </Tabs>
 
-## Connect to the cluster
+## First run
 
-Create a dedicated user and API token first — see [Permissions](/cv4pve-pepper/permissions/). Then:
-
-<CliConnection user="pepper@pve" />
-
-## Open a console
+Create a dedicated user and API token first — see [Permissions](/cv4pve-pepper/permissions/). Then open
+the console of VM 100:
 
 ```bash
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=100 --viewer=/usr/bin/remote-viewer
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 --viewer=/usr/bin/remote-viewer
 ```
 
 On Windows:
 
 ```powershell
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=100 `
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 `
   --viewer="C:\Program Files\VirtViewer v11.0-256\bin\remote-viewer.exe"
 ```
 
@@ -74,5 +70,8 @@ cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=100 `
 
 With SPICE pepper exits as soon as the viewer has started, and the viewer stays open. With `--vnc` pepper
 keeps running until you close the viewer, because it carries the console traffic.
+
+Several nodes, username and password, certificates and response files: see
+[Connection](/cv4pve-pepper/connection/).
 
 When the command works, put it in a [parameter file and a desktop shortcut](/cv4pve-pepper/desktop-shortcut/).
