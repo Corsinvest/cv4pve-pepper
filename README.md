@@ -38,10 +38,10 @@ It **runs on your computer and uses only the Proxmox VE API**: nothing to instal
 
 ```bash
 # SPICE
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=webserver --viewer=/usr/bin/remote-viewer
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=webserver --viewer=/usr/bin/remote-viewer
 
 # VNC: add --vnc
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=webserver --viewer=/usr/bin/remote-viewer --vnc
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=webserver --viewer=/usr/bin/remote-viewer --vnc
 ```
 
 | SPICE | VNC |
@@ -77,7 +77,7 @@ unzip cv4pve-pepper-linux-x64.zip && chmod +x cv4pve-pepper
 sudo apt install virt-viewer
 
 # Open the console of VM 100, with an API token
-./cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=UUID' --vmid=100 --viewer=/usr/bin/remote-viewer
+./cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 --viewer=/usr/bin/remote-viewer
 ```
 
 The API token needs `VM.Audit` and `VM.Console` on the guest, plus `VM.PowerMgmt` to start it — see [Permissions](https://corsinvest.github.io/cv4pve-pepper/permissions/).

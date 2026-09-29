@@ -10,12 +10,12 @@ A console on a double-click takes two pieces: a **parameter file** with everythi
 
 ## Parameter file
 
-Every cv4pve tool reads options from a file given with `@`, one option per line; lines starting with `#`
-are ignored. Options on the command line are added to those of the file.
+pepper reads options from a file given with `@` — see [Response files](/cv4pve-pepper/connection/#response-files).
+Options on the command line are added to those of the file.
 
 ```text title="vm100.parm"
 --host=pve01,pve02
---api-token=pepper@pve!console=UUID
+--api-token=pepper@pve!console=<uuid>
 --vmid=webserver
 --viewer=/usr/bin/remote-viewer
 --start-or-resume
@@ -28,7 +28,7 @@ cv4pve-pepper @vm100.parm
 
 The file contains the token secret: keep it readable only by the user who owns the shortcut. With
 `--username` and `--password`, the password can be kept in a separate file with `--password=file:<path>` —
-see [Getting started](/cv4pve-pepper/getting-started/#connect-to-the-cluster).
+see [Connection](/cv4pve-pepper/connection/).
 
 Give it more than one host, as above, so the shortcut still works while a node is down.
 
