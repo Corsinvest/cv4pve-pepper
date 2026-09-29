@@ -1,9 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [2.0.1] - 2026-09-29
 
 ### Documentation
-- **Documentation site.** The documentation moved from the README to [corsinvest.github.io/cv4pve-pepper](https://corsinvest.github.io/cv4pve-pepper/): getting started, permissions, options, SPICE and VNC, desktop shortcut and troubleshooting, each checked against the code and on a test cluster. The README is now a short overview
+- **Documentation site.** The documentation moved from the README to [corsinvest.github.io/cv4pve-pepper](https://corsinvest.github.io/cv4pve-pepper/): getting started, permissions, options, SPICE and VNC, desktop shortcut and troubleshooting, each checked against the code and on a test cluster, including which viewer to use, also for VNC ([#43](https://github.com/Corsinvest/cv4pve-pepper/issues/43)). The README is now a short overview
 
 ### Fixed
 - `--debug` and `--log-level` now control all diagnostic output the same way: pepper's own lines (viewer command, VNC bridge, start/resume) go through the logger instead of the console, so `--log-level` shows them too
@@ -11,7 +11,7 @@
 - `--dry-run` no longer leaves a `.vv` file with a valid ticket in the temp folder
 - Errors are reported as `ERROR: …` like the other cv4pve tools, with the stack trace when `--debug` is set
 - `--start-or-resume` stops with the real reason when the start or resume fails, instead of trying to open the console of a stopped VM; the result of the start task is checked
-- Windows release builds are WinExe again: no console window when launched from a shortcut (the release is built on Linux, so the output type now follows the target runtime)
+- Windows release builds are now WinExe, as intended in 2.0.0: no console window when launched from a shortcut (the release is built on Linux, so the output type now follows the target runtime)
 - `--proxy` help and README: the SPICE proxy is an IP address or host name reached on port 3128, not a URL
 - Packaging license was MIT; the project is GPL-3.0-only
 
