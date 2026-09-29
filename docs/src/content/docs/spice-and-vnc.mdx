@@ -7,7 +7,8 @@ import openSpice from '../../assets/open-spice.png';
 import openVnc from '../../assets/open-vnc.png';
 
 Both consoles open in `remote-viewer` and show the guest's screen as the Proxmox VE console does, from boot
-onwards: they work before the guest OS has a network, or while it is broken.
+onwards: they work before the guest OS has a network, or while it is broken. VNC clients such as TigerVNC do
+not work, also for `--vnc`: pepper passes the viewer a `.vv` connection file, which only `remote-viewer` reads.
 
 ## Which one
 

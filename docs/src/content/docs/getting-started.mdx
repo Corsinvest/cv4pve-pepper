@@ -19,6 +19,11 @@ REST API. Nothing is installed on the nodes.
 pepper does not draw the console itself: it starts `remote-viewer`, the viewer of the virt-viewer project,
 and passes it the connection. Its path is the required `--viewer` option.
 
+:::note[Only remote-viewer]
+The same viewer serves SPICE and VNC. VNC clients such as TigerVNC do not work: pepper passes the viewer a
+`.vv` connection file, which only `remote-viewer` reads.
+:::
+
 <Tabs syncKey="os">
   <TabItem label="Windows">
     ```powershell
