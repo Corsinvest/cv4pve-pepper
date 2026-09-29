@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Documentation
+- **Documentation site.** The documentation moved from the README to [corsinvest.github.io/cv4pve-pepper](https://corsinvest.github.io/cv4pve-pepper/): getting started, permissions, options, SPICE and VNC, desktop shortcut and troubleshooting, each checked against the code and on a test cluster. The README is now a short overview
+
 ### Fixed
 - `--debug` and `--log-level` now control all diagnostic output the same way: pepper's own lines (viewer command, VNC bridge, start/resume) go through the logger instead of the console, so `--log-level` shows them too
 - Secrets are masked in diagnostic output: the VNC ticket in the WebSocket URL and the SPICE password

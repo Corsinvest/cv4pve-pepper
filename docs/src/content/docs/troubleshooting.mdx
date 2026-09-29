@@ -1,0 +1,70 @@
+---
+title: Troubleshooting
+description: The errors cv4pve-pepper prints and what they mean, how to wait for it in a script on Windows, and how to see what it is doing.
+---
+
+import CliTroubleshooting from '@corsinvest/cv4pve-docs-theme/components/CliTroubleshooting.astro';
+
+## Common errors
+
+pepper stops at the first error, prints it after `ERROR:` and exits with code 1. The viewer is not started.
+
+| Message | Meaning | What to do |
+|---|---|---|
+| `ERROR: VM/CT 'webserver' not found!` | No guest matches `--vmid`, or the account may not see it | Check the id or name — see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container) — and `VM.Audit` in [Permissions](/cv4pve-pepper/permissions/) |
+| `ERROR: no spice port` | The VM's display is not SPICE | Add `--vnc`, or set **Hardware → Display** to SPICE — see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
+| `ERROR: VM 100 not running` | SPICE on a stopped VM | Add `--start-or-resume` |
+| `ERROR: Start VM/CT 100 failed: …` | The start or resume request of `--start-or-resume` was refused, or its task ended with an error; the reason from Proxmox VE follows | Often `VM.PowerMgmt` is missing, or the VM cannot start — read the task log in the web interface |
+| `ERROR: Parameter verification failed.` | `--proxy` is a URL | Pass an IP address or a host name — see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy) |
+| `Option '--viewer' is required.` | `--viewer` is missing | Pass the path of `remote-viewer` |
+| `Option … is not a valid file!` | The `--viewer` path does not exist | Check the path; on Windows it contains the viewer version, e.g. `VirtViewer v11.0-256` |
+
+For the connection errors (host not reachable, wrong token, certificate) see the connection options in
+[Getting started](/cv4pve-pepper/getting-started/#connect-to-the-cluster).
+
+## The viewer opens and closes, or does not connect
+
+- **SPICE**: the viewer connects to the SPICE proxy on **port 3128**, not to port 8006. If the API works but
+  the SPICE window does not connect, that port is blocked or the address is not reachable from your
+  computer: open it, choose another node with `--proxy`, or use `--vnc` — see
+  [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/#spice-proxy).
+- **Ticket**: the ticket in the `.vv` file is valid for a short time and for one connection. Run pepper
+  again rather than reopening an old `.vv` file.
+
+## Waiting for pepper in a script on Windows
+
+On Windows pepper is a windowed program, so that a desktop shortcut opens no black console window. When
+you start it from a terminal it attaches to that terminal to print its messages, but Windows does not wait
+for it: the prompt comes back at once, the messages appear after it, and `$LASTEXITCODE` is empty.
+
+In a script, wait for it explicitly:
+
+```powershell
+$p = Start-Process cv4pve-pepper -ArgumentList '@C:\cv4pve\vm100.parm' -Wait -PassThru -NoNewWindow
+$p.ExitCode
+```
+
+In `cmd`, use `start /wait`. On Linux and macOS pepper is an ordinary console program.
+
+## Debug output
+
+<CliTroubleshooting />
+
+pepper logs its own steps at the same level as the API calls, so they appear with `--debug` or
+`--log-level Debug`:
+
+| Line | When |
+|---|---|
+| `VM is stopped. Start now!` / `VM is paused. Resume now!` | `--start-or-resume` on a stopped or paused guest |
+| `Start VM/CT 100: OK.` | The start task ended; a failure stops pepper with an error instead |
+| `Start still running after 5s, continuing.` | The task did not end within `--wait-for-startup` |
+| `VNC WebSocket URL: …vncticket=****` | `--vnc`: the console address on the node, ticket masked |
+| `VNC local port: 50123` | `--vnc`: the local port the viewer connects to |
+| `Run FileName: …` / `Run Arguments: …` | The viewer command pepper starts |
+
+With debug output on, the viewer's own messages also appear in the terminal.
+
+:::caution[Trace contains the console ticket]
+`--log-level Trace` logs the full API responses, including the SPICE password and the proxy ticket
+returned by Proxmox VE. They are short-lived, but do not share Trace output while they are still valid.
+:::

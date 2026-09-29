@@ -1,0 +1,40 @@
+---
+title: Permissions
+description: The Proxmox VE user, API token and privileges cv4pve-pepper needs to find a VM, open its console and start it.
+---
+
+cv4pve-pepper works through the API, so the consoles it can open are exactly those its account is allowed
+to. Use a dedicated user with an API token rather than `root@pam`, and give it only the guests it should
+reach.
+
+## User and token
+
+Create a [user](https://pve.proxmox.com/pve-docs/chapter-pveum.html#pveum_users) or an [API token](https://pve.proxmox.com/pve-docs/chapter-pveum.html#pveum_tokens) and [assign it](https://pve.proxmox.com/pve-docs/chapter-pveum.html#pveum_permission_management) the privileges below: on `/vms/<vmid>` for one guest, on
+`/pool/<pool>` for the guests of a [pool](https://pve.proxmox.com/pve-docs/chapter-pveum.html#pveum_pools),
+on `/vms` for all of them.
+
+:::caution[Tokens with privilege separation]
+A token with privilege separation (the default in the web UI) does **not** inherit the user's
+permissions: grant the role to the token too, or cv4pve-pepper finds no VM.
+:::
+
+## Privileges
+
+| Privilege | On | Used for | Without it |
+|---|---|---|---|
+| `VM.Audit` | `/vms` | Finding the guest by id or name, its node and status | `ERROR: VM/CT '100' not found!` |
+| `VM.Console` | `/vms` | SPICE ticket (`spiceproxy`), VNC ticket and WebSocket (`vncproxy`, `vncwebsocket`) | The console request is refused |
+| `VM.PowerMgmt` | `/vms` | `--start-or-resume`: start and resume | The start is refused and pepper stops |
+
+The built-in `PVEVMUser` role contains all three, and more that pepper does not use. For an account
+limited to what pepper needs, create a role with these three; leave out `VM.PowerMgmt` if the user should
+not start VMs.
+
+## How missing privileges are reported
+
+Proxmox VE answers a request the caller is only partly entitled to by *filtering the response*:
+`/cluster/resources` leaves out the guests the account cannot audit, with `200 OK`. Without `VM.Audit` on a
+guest, pepper does not see it at all and reports it as not found.
+
+The console and start requests fail instead: pepper prints `ERROR:` with the message returned by
+Proxmox VE and exits with code 1. See [Troubleshooting](/cv4pve-pepper/troubleshooting/).

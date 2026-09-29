@@ -1,0 +1,73 @@
+---
+title: Desktop shortcut
+description: Put the connection and the VM in a cv4pve-pepper parameter file and open the console from a desktop icon on Windows or Linux.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+A console on a double-click takes two pieces: a **parameter file** with everything pepper needs, and a
+**shortcut** that runs pepper with that file.
+
+## Parameter file
+
+Every cv4pve tool reads options from a file given with `@`, one option per line; lines starting with `#`
+are ignored. Options on the command line are added to those of the file.
+
+```text title="vm100.parm"
+--host=pve01,pve02
+--api-token=pepper@pve!console=UUID
+--vmid=webserver
+--viewer=/usr/bin/remote-viewer
+--start-or-resume
+#--vnc
+```
+
+```bash
+cv4pve-pepper @vm100.parm
+```
+
+The file contains the token secret: keep it readable only by the user who owns the shortcut. With
+`--username` and `--password`, the password can be kept in a separate file with `--password=file:<path>` —
+see [Getting started](/cv4pve-pepper/getting-started/#connect-to-the-cluster).
+
+Give it more than one host, as above, so the shortcut still works while a node is down.
+
+## Windows
+
+<Steps>
+
+1. Save the parameter file, e.g. `C:\cv4pve\vm100.parm`, with the Windows viewer path:
+
+   ```text
+   --viewer=C:\Program Files\VirtViewer v11.0-256\bin\remote-viewer.exe
+   ```
+
+2. Right-click the desktop → **New → Shortcut**, and as location enter:
+
+   ```text
+   cv4pve-pepper @C:\cv4pve\vm100.parm
+   ```
+
+   If pepper was not installed with WinGet, use the full path of `cv4pve-pepper.exe`.
+
+3. Name the shortcut after the VM.
+
+</Steps>
+
+pepper is a windowed program on Windows: the shortcut opens only the console, without a black console window.
+
+## Linux
+
+Create `~/.local/share/applications/vm100.desktop` — it appears in the application menu; copy it to the
+desktop for an icon:
+
+```ini title="vm100.desktop"
+[Desktop Entry]
+Type=Application
+Name=Web server console
+Exec=cv4pve-pepper @/home/user/.config/cv4pve/vm100.parm
+Terminal=false
+```
+
+`Exec` needs the full path of the parameter file. With the `.deb` or `.rpm` package pepper is in
+`/usr/bin`; with the zip, use its full path.
