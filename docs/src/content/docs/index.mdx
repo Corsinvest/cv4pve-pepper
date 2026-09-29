@@ -1,0 +1,107 @@
+---
+title: cv4pve-pepper
+description: Open the SPICE or VNC console of a Proxmox VE VM or container with one command — from your desktop, a script or a shortcut, without the web interface.
+template: splash
+hero:
+  title: The console of any <span class="accent-mark">Proxmox VE</span> VM, one command away
+  tagline: Runs outside the nodes, API only. cv4pve-pepper finds the VM or container by id or name, starts it if you ask, and opens its SPICE or VNC console in remote-viewer — no web interface, no .vv file to download.
+  actions:
+    - text: Get started
+      link: /cv4pve-pepper/getting-started/
+      icon: right-arrow
+    - text: SPICE or VNC?
+      link: /cv4pve-pepper/spice-and-vnc/
+      icon: right-arrow
+      variant: secondary
+---
+
+import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
+import CtaBand from '@corsinvest/cv4pve-docs-theme/components/CtaBand.astro';
+import proxmoxLogo from '../../assets/proxmox-logo.svg';
+import openSpice from '../../assets/open-spice.png';
+import openVnc from '../../assets/open-vnc.png';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+export const features = [
+  { title: "SPICE or VNC", text: "SPICE for VMs with a SPICE display and for containers; --vnc for any running VM or container, with no display setting to change.", href: 'spice-and-vnc/' },
+  { title: "By id or by name", text: "--vmid takes the id, the name (any case) or a part of the name, so a shortcut keeps working when the VM moves to another node.", href: 'options/#finding-the-vm-or-container' },
+  { title: "Starts it for you", text: "--start-or-resume starts a stopped guest or resumes a paused one, waits for the start task and opens the console.", href: 'options/#start-or-resume' },
+  { title: "One icon per VM", text: "Put the connection and the VM in a parameter file and make a desktop shortcut to it: one double-click opens the console.", href: 'desktop-shortcut/' },
+  { title: "VNC through the API port", text: "The VNC console travels inside the API connection on port 8006: nothing else to open in the firewall.", href: 'spice-and-vnc/#vnc' },
+  { title: "Any node as SPICE proxy", text: "SPICE goes through the spiceproxy on port 3128 of the node you connect to, or of the node you name with --proxy.", href: 'spice-and-vnc/#spice-proxy' },
+];
+
+## Why
+
+In Proxmox VE the console of a VM is a few clicks away in the web interface: log in, find the VM, open
+*Console*, or download a `.vv` file for SPICE and open it before its ticket expires. That is fine once. It is
+not when the same people open the same VMs every day, when a script has to show a console, or when a user
+should only get an icon on the desktop, not the whole web interface.
+
+cv4pve-pepper does those steps in one command. It asks the API for a console ticket, writes the file for the
+viewer and starts `remote-viewer` with it — so the console can be a shortcut, a line in a script or a menu
+entry.
+
+## One command. Any VM. SPICE or VNC.
+
+SPICE for the full desktop experience, VNC for every running VM and container — switch with a single flag.
+
+<Tabs>
+  <TabItem label="SPICE">
+
+```bash
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=…' --vmid=webserver --viewer=/usr/bin/remote-viewer
+```
+
+<img src={openSpice.src} alt="remote-viewer showing the SPICE console of container 105, at the login prompt" width="742" />
+
+  </TabItem>
+  <TabItem label="VNC">
+
+```bash ins="--vnc"
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=…' --vmid=webserver --viewer=/usr/bin/remote-viewer --vnc
+```
+
+<img src={openVnc.src} alt="remote-viewer titled VNC: CT 105, showing the VNC console of container 105 at the login prompt" width="742" />
+
+  </TabItem>
+</Tabs>
+
+1. pepper connects to `pve01` and looks up `webserver` in the cluster, on whichever node it runs.
+2. For SPICE it asks Proxmox VE for a SPICE ticket and writes a `.vv` file in the temporary folder; for VNC
+   (`--vnc`) it opens a local bridge to the console.
+3. It starts `remote-viewer`, which opens the console window and deletes the `.vv` file once read.
+4. With SPICE pepper exits at once and the viewer stays open; with VNC pepper keeps the bridge open until you
+   close the viewer.
+
+## Where it fits
+
+cv4pve-pepper opens one console, from the command line. Its companion
+[cv4pve-vdi](https://corsinvest.github.io/cv4pve-vdi/) is the desktop application for people who pick their
+VM from a list. Both use the same console code, so SPICE and VNC behave the same way.
+
+| | **cv4pve-pepper** | [cv4pve-vdi](https://corsinvest.github.io/cv4pve-vdi/) |
+|---|---|---|
+| **What it is** | Command-line tool | Desktop application |
+| **You choose the VM** | On the command line or in a parameter file | From the list of the VMs you may use |
+| **Consoles** | SPICE, VNC | SPICE, VNC, plus RDP, SSH and custom services |
+| **Login** | API token or user and password, in options or a file | User and password, per person |
+| **Best for** | Shortcuts, scripts, one console per icon | Users working on several VMs every day |
+| **Access** | Proxmox VE API only, from outside the nodes | Proxmox VE API only, from outside the nodes |
+
+## Outside the nodes, API only
+
+cv4pve-pepper runs on the computer where the console should appear and talks only to the Proxmox VE REST API
+on port 8006 — plus the SPICE proxy on port 3128 for SPICE. Nothing is installed on the nodes and no SSH is
+needed: an account with the privileges in [Permissions](/cv4pve-pepper/permissions/) is enough. Give it more
+than one node and it connects to the first one that answers.
+
+## What it does for you
+
+<FeatureGrid items={features} />
+
+<CtaBand
+  title="Open your first console"
+  text="Install cv4pve-pepper and remote-viewer, point it at any node, name the VM."
+  proxmoxLogo={proxmoxLogo}
+/>

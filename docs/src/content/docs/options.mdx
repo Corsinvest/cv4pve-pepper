@@ -1,0 +1,75 @@
+---
+title: Options
+description: Every cv4pve-pepper option — how it finds the VM or container, starting it, the viewer, SPICE proxy and VNC — checked against the code.
+---
+
+```bash
+cv4pve-pepper --host=… --api-token=… --vmid=<id or name> --viewer=<path to remote-viewer> [options]
+```
+
+The connection options — `--host`, `--api-token`, `--username`, `--password`, `--validate-certificate` and
+`@` parameter files — are the same for every cv4pve tool: see
+[Getting started](/cv4pve-pepper/getting-started/#connect-to-the-cluster).
+
+| Option | Default | What it does |
+|---|---|---|
+| `--vmid` | — | The VM or container: id, name or part of the name. See below |
+| `--viewer` | *(required)* | Path of `remote-viewer`. It must exist |
+| `--viewer-options` | — | Extra arguments for the viewer, passed as they are. Quote the value |
+| `--vnc` | off | Open the VNC console instead of SPICE — see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
+| `--proxy` | the host pepper connected to | SPICE proxy: an IP address or host name, reached on port 3128 — see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy) |
+| `--start-or-resume` | off | Start the guest if stopped, resume it if paused |
+| `--wait-for-startup` | `5` | Seconds to wait for the start or resume task |
+| `--dry-run` | off | Do everything except starting the viewer; not listed in `--help` |
+
+## Finding the VM or container
+
+pepper reads the list of guests of the whole cluster, so the node does not matter: the same command
+keeps working after a migration. `--vmid` accepts:
+
+| Value | Matches |
+|---|---|
+| `100` | The guest with id 100 |
+| `webserver` | The guest named `webserver`, in any case (`WebServer` too) |
+| `%web%` | The first guest whose name **contains** `web` |
+| `%web` | The first guest whose name **starts** with `web` |
+| `web%` | The first guest whose name **ends** with `web` |
+| `100:199` | The first guest with an id from 100 to 199 |
+
+:::caution[`%` works the other way round from SQL]
+In `%web` the `%` marks where the name **starts**, not where other text may be: `%web` matches `webserver`,
+and `server%` matches `webserver`. `%web%` matches both.
+:::
+
+When more than one guest matches, pepper takes the first one ordered by **node name** and then by **id** —
+not the lowest id in the cluster. Use the exact id or name when it matters.
+
+## Start or resume
+
+With `--start-or-resume`, a stopped guest is started and a paused one resumed before the console opens.
+pepper waits for the start task up to `--wait-for-startup` seconds, then:
+
+- if the task ended with `OK`, it opens the console;
+- if the task failed, it stops with `ERROR: Start VM/CT <id> failed: …` and the reason from Proxmox VE;
+- if the task is still running, it opens the console anyway.
+
+The task ends when Proxmox VE has started the VM, not when the guest OS has booted: the console shows the
+boot. Without `--start-or-resume`, a stopped guest gives an error — see
+[Troubleshooting](/cv4pve-pepper/troubleshooting/#common-errors).
+
+## The viewer
+
+`--viewer` is the path of `remote-viewer`. `--viewer-options` is appended to its command line as it is,
+for example `--viewer-options="--full-screen"` to open the console full screen.
+
+pepper starts the viewer with the connection file (`.vv`) in the temporary folder. The file holds a
+short-lived ticket, and the viewer deletes it after reading it; with `--dry-run` pepper deletes it itself.
+
+- **SPICE**: pepper exits as soon as the viewer has started, with code 0; the viewer stays open.
+- **VNC**: pepper waits until the viewer is closed, because the console traffic goes through it, and exits
+  with code 1 if the viewer ended with an error.
+
+## Exit code
+
+`0` when the viewer was started (SPICE) or ended normally (VNC), or with `--dry-run` when everything was
+prepared; `1` on any error, printed after `ERROR:`.
