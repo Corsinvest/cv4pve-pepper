@@ -1,0 +1,31 @@
+---
+title: AI assistants
+description: Let an AI assistant such as Claude Code or Codex open the console of a Proxmox VE VM on your desktop with cv4pve-pepper, with the cv4pve-pepper skill and a token of its own.
+---
+
+import AiSkill from '@corsinvest/cv4pve-docs-theme/components/AiSkill.astro';
+
+An AI assistant that runs on your workstation can use cv4pve-pepper to open the console of a VM or
+container for you: you ask for the console of `webserver`, and the `remote-viewer` window opens on your
+desktop. The assistant does not see the screen of the VM; it finds the guest, starts the viewer and
+tells you what went wrong when the console does not open.
+
+## The cv4pve-pepper skill
+
+<AiSkill tool="cv4pve-pepper">
+
+- connect only with the options file, passed with `@`, and never print it;
+- use the exact id or name of the guest, and ask when you gave only part of a name;
+- add [`--start-or-resume`](/cv4pve-pepper/options/#start-or-resume), which starts a stopped guest, only
+  after you agree.
+
+</AiSkill>
+
+## Give it a token of its own
+
+The skill tells the assistant what to do; the token decides what it can do. The assistant can read the
+token and call the Proxmox VE API without cv4pve-pepper, and the skill cannot prevent that. Give it a
+token with `VM.Audit` and `VM.Console` only on the guests it may open, and `VM.PowerMgmt` only if it may
+start them: see [Permissions](/cv4pve-pepper/permissions/#privileges). Put the connection and the path of
+the viewer in an [options file](/cv4pve-pepper/connection/#options-in-a-file), so the token stays out of
+the conversation.

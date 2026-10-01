@@ -93,6 +93,7 @@ The API token needs `VM.Audit` and `VM.Console` on the guest, plus `VM.PowerMgmt
 | [Options](https://corsinvest.github.io/cv4pve-pepper/options/) | Every option: finding the VM, start or resume, the viewer |
 | [SPICE and VNC](https://corsinvest.github.io/cv4pve-pepper/spice-and-vnc/) | Which one to use, the SPICE proxy, how VNC travels through the API |
 | [Desktop shortcut](https://corsinvest.github.io/cv4pve-pepper/desktop-shortcut/) | Parameter file and one icon per VM on Windows and Linux |
+| [AI assistants](https://corsinvest.github.io/cv4pve-pepper/ai-agents/) | Claude Code, Codex, the `cv4pve-pepper` skill |
 | [Troubleshooting](https://corsinvest.github.io/cv4pve-pepper/troubleshooting/) | Error messages, scripts on Windows, debug output |
 
 ---
