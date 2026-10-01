@@ -76,7 +76,7 @@ export default defineConfig({
       ],
       lastUpdated: true,
       sidebar: [
-        { label: 'Start here', items: ['getting-started', 'permissions', 'connection', 'troubleshooting'] },
+        { label: 'Start here', items: ['getting-started', 'permissions', 'connection', 'ai-agents', 'troubleshooting'] },
         { label: 'Using pepper', items: ['options', 'spice-and-vnc', 'desktop-shortcut'] },
       ],
     }),
