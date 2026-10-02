@@ -1,5 +1,5 @@
 type=cli
-description=SPICE/VNC console launcher for Proxmox VE — connect to VMs with a single command
+description=SPICE/VNC console launcher for Proxmox VE: connect to VMs with a single command
 long-description=Open the SPICE or VNC console of a Proxmox VE VM or container with a single command.
 license=GPL-3.0-only
 winget-id=Corsinvest.cv4pve.pepper
