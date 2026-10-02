@@ -1,6 +1,8 @@
 ---
-title: Desktop shortcut
+title: Desktop shortcut to a Proxmox VE VM console
 description: Put the connection and the VM in a cv4pve-pepper parameter file and open the console from a desktop icon on Windows or Linux.
+sidebar:
+  label: Desktop shortcut
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -10,7 +12,7 @@ A console on a double-click takes two pieces: a **parameter file** with everythi
 
 ## Parameter file
 
-pepper reads options from a file given with `@` — see [Options in a file](/cv4pve-pepper/connection/#options-in-a-file).
+pepper reads options from a file given with `@`: see [Options in a file](/cv4pve-pepper/connection/#options-in-a-file).
 Options on the command line are added to those of the file.
 
 ```text title="vm100.parm"
@@ -27,7 +29,7 @@ cv4pve-pepper @vm100.parm
 ```
 
 The file contains the token secret: keep it readable only by the user who owns the shortcut. With
-`--username` and `--password`, the password can be kept in a separate file with `--password=file:<path>` —
+`--username` and `--password`, the password can be kept in a separate file with `--password=file:<path>`,
 see [Connection](/cv4pve-pepper/connection/).
 
 Give it more than one host, as above, so the shortcut still works while a node is down.
@@ -58,7 +60,7 @@ pepper is a windowed program on Windows: the shortcut opens only the console, wi
 
 ## Linux
 
-Create `~/.local/share/applications/vm100.desktop` — it appears in the application menu; copy it to the
+Create `~/.local/share/applications/vm100.desktop`: it appears in the application menu; copy it to the
 desktop for an icon:
 
 ```ini title="vm100.desktop"

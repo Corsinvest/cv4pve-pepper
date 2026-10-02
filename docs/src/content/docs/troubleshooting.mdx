@@ -1,6 +1,8 @@
 ---
-title: Troubleshooting
+title: cv4pve-pepper errors and a viewer that does not connect
 description: The errors cv4pve-pepper prints and what they mean, how to wait for it in a script on Windows, and how to see what it is doing.
+sidebar:
+  label: Troubleshooting
 ---
 
 import CliTroubleshooting from '@corsinvest/cv4pve-docs-theme/components/CliTroubleshooting.astro';
@@ -11,11 +13,11 @@ pepper stops at the first error, prints it after `ERROR:` and exits with code 1.
 
 | Message | Meaning | What to do |
 |---|---|---|
-| `ERROR: VM/CT 'webserver' not found!` | No guest matches `--vmid`, or the account may not see it | Check the id or name — see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container) — and `VM.Audit` in [Permissions](/cv4pve-pepper/permissions/) |
-| `ERROR: no spice port` | The VM's display is not SPICE | Add `--vnc`, or set **Hardware → Display** to SPICE — see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
+| `ERROR: VM/CT 'webserver' not found!` | No guest matches `--vmid`, or the account may not see it | Check the id or name (see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container)) and `VM.Audit` in [Permissions](/cv4pve-pepper/permissions/) |
+| `ERROR: no spice port` | The VM's display is not SPICE | Add `--vnc`, or set **Hardware → Display** to SPICE: see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
 | `ERROR: VM 100 not running` | SPICE on a stopped VM | Add `--start-or-resume` |
-| `ERROR: Start VM/CT 100 failed: …` | The start or resume request of `--start-or-resume` was refused, or its task ended with an error; the reason from Proxmox VE follows | Often `VM.PowerMgmt` is missing, or the VM cannot start — read the task log in the web interface |
-| `ERROR: Parameter verification failed.` | `--proxy` is a URL | Pass an IP address or a host name — see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy) |
+| `ERROR: Start VM/CT 100 failed: …` | The start or resume request of `--start-or-resume` was refused, or its task ended with an error; the reason from Proxmox VE follows | Often `VM.PowerMgmt` is missing, or the VM cannot start: read the task log in the web interface |
+| `ERROR: Parameter verification failed.` | `--proxy` is a URL | Pass an IP address or a host name: see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy) |
 | `Option '--viewer' is required.` | `--viewer` is missing | Pass the path of `remote-viewer` |
 | `Option … is not a valid file!` | The `--viewer` path does not exist | Check the path; on Windows it contains the viewer version, e.g. `VirtViewer v11.0-256` |
 
@@ -26,7 +28,7 @@ For the connection errors (host not reachable, wrong token, certificate) see the
 
 - **SPICE**: the viewer connects to the SPICE proxy on **port 3128**, not to port 8006. If the API works but
   the SPICE window does not connect, that port is blocked or the address is not reachable from your
-  computer: open it, choose another node with `--proxy`, or use `--vnc` — see
+  computer: open it, choose another node with `--proxy`, or use `--vnc`: see
   [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/#spice-proxy).
 - **Ticket**: the ticket in the `.vv` file is valid for a short time and for one connection. Run pepper
   again rather than reopening an old `.vv` file.
