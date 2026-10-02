@@ -16,7 +16,7 @@ Launching SPICE/VNC Remote Viewer for Proxmox VE (Made in Italy)
 [![WinGet](https://img.shields.io/winget/v/Corsinvest.cv4pve.pepper?style=flat-square&logo=windows)](https://winstall.app/apps/Corsinvest.cv4pve.pepper)
 [![AUR](https://img.shields.io/aur/version/cv4pve-pepper?style=flat-square&logo=archlinux)](https://aur.archlinux.org/packages/cv4pve-pepper)
 
-> **The console of any Proxmox VE VM, one command away** — SPICE or VNC, straight into `remote-viewer`, from your desktop, a script or a shortcut.
+> **The console of any Proxmox VE VM, one command away**: SPICE or VNC, straight into `remote-viewer`, from your desktop, a script or a shortcut.
 >
 > **[Documentation](https://corsinvest.github.io/cv4pve-pepper/)**
 >
@@ -26,9 +26,9 @@ Launching SPICE/VNC Remote Viewer for Proxmox VE (Made in Italy)
 
 ## Why
 
-Opening a console in Proxmox VE means logging in to the web interface, finding the VM, clicking *Console* — or downloading a `.vv` file for SPICE and opening it before its ticket expires. Fine once; tedious when the same people open the same VMs every day, and impossible to put on a desktop icon.
+Opening a console in Proxmox VE means logging in to the web interface, finding the VM, clicking *Console*, or downloading a `.vv` file for SPICE and opening it before its ticket expires. Fine once; tedious when the same people open the same VMs every day, and impossible to put on a desktop icon.
 
-cv4pve-pepper does all of it in one command: it finds the VM or container by id or name, starts it if you ask, gets the console ticket and opens `remote-viewer`. Turn it into a desktop shortcut and a console is **one double-click away** — without giving anyone the web interface.
+cv4pve-pepper does all of it in one command: it finds the VM or container by id or name, starts it if you ask, gets the console ticket and opens `remote-viewer`. Turn it into a desktop shortcut and a console is **one double-click away**, without giving anyone the web interface.
 
 It **runs on your computer and uses only the Proxmox VE API**: nothing to install on the cluster, no SSH.
 
@@ -48,19 +48,19 @@ cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=webser
 |---|---|
 | ![SPICE console opened by cv4pve-pepper](docs/src/assets/open-spice.png) | ![VNC console opened by cv4pve-pepper](docs/src/assets/open-vnc.png) |
 
-SPICE for the full desktop experience, VNC for every running VM and container — [which one to use](https://corsinvest.github.io/cv4pve-pepper/spice-and-vnc/).
+SPICE for the full desktop experience, VNC for every running VM and container: [which one to use](https://corsinvest.github.io/cv4pve-pepper/spice-and-vnc/).
 
 ---
 
 ## Features
 
-- **SPICE or VNC** — SPICE with audio, USB and clipboard when the VM is set up for it; VNC on every running VM and container, with no display setting to change.
-- **VNC through the API port** — the console travels inside the API connection on port 8006: nothing else to open in the firewall.
-- **By id or by name** — the same command keeps working when the VM migrates to another node.
-- **Starts it for you** — `--start-or-resume` starts a stopped guest or resumes a paused one, then opens the console.
-- **One icon per VM** — a parameter file and a desktop shortcut, on Windows and Linux; no console window on Windows.
-- **Keeps working with a node down** — give it more than one host and it uses the first that answers.
-- **Single self-contained binary** — Windows, Linux and macOS, nothing else to install besides `remote-viewer`.
+- **SPICE or VNC**: SPICE with audio, USB and clipboard when the VM is set up for it; VNC on every running VM and container, with no display setting to change.
+- **VNC through the API port**: the console travels inside the API connection on port 8006: nothing else to open in the firewall.
+- **By id or by name**: the same command keeps working when the VM migrates to another node.
+- **Starts it for you**: `--start-or-resume` starts a stopped guest or resumes a paused one, then opens the console.
+- **One icon per VM**: a parameter file and a desktop shortcut, on Windows and Linux; no console window on Windows.
+- **Keeps working with a node down**: give it more than one host and it uses the first that answers.
+- **Single self-contained binary**: Windows, Linux and macOS, nothing else to install besides `remote-viewer`.
 
 ---
 
@@ -80,7 +80,7 @@ sudo apt install virt-viewer
 ./cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 --viewer=/usr/bin/remote-viewer
 ```
 
-The API token needs `VM.Audit` and `VM.Console` on the guest, plus `VM.PowerMgmt` to start it — see [Permissions](https://corsinvest.github.io/cv4pve-pepper/permissions/).
+The API token needs `VM.Audit` and `VM.Console` on the guest, plus `VM.PowerMgmt` to start it: see [Permissions](https://corsinvest.github.io/cv4pve-pepper/permissions/).
 
 ---
 

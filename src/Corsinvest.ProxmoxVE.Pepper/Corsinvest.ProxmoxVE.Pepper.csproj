@@ -8,7 +8,7 @@
     <AssemblyName>cv4pve-pepper</AssemblyName>
     <Product>Corsinvest for Proxmox VE Pepper</Product>
     <AssemblyTitle>Corsinvest for Proxmox VE Pepper</AssemblyTitle>
-    <Description>SPICE/VNC console launcher for Proxmox VE — connect to VMs with a single command</Description>
+    <Description>SPICE/VNC console launcher for Proxmox VE: connect to VMs with a single command</Description>
     <ApplicationIcon>..\..\icon.ico</ApplicationIcon>
     <IsPackable>false</IsPackable>
     <InvariantGlobalization>true</InvariantGlobalization>
