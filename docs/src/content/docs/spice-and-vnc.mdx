@@ -1,6 +1,8 @@
 ---
-title: SPICE and VNC
+title: "SPICE or VNC for a Proxmox VE console: which one to use"
 description: When to use SPICE or VNC with cv4pve-pepper, what each needs on the VM and on the network, the SPICE proxy, and how the VNC console travels through the API port.
+sidebar:
+  label: SPICE and VNC
 ---
 
 import openSpice from '../../assets/open-spice.png';
@@ -18,7 +20,7 @@ not work, also for `--vnc`: pepper passes the viewer a `.vv` connection file, wh
 | **Needs** | `VM.Console`; for VMs, **Hardware → Display** set to SPICE | `VM.Console` |
 | **Network** | Client → SPICE proxy on port 3128 | Client → API port (8006) only |
 | **pepper** | Exits once the viewer has started | Runs until the viewer is closed |
-| **Extras** | Audio, USB redirection, clipboard, folder sharing, several monitors — with the SPICE guest tools | Screen, keyboard and mouse |
+| **Extras** | Audio, USB redirection, clipboard, folder sharing, several monitors, with the SPICE guest tools | Screen, keyboard and mouse |
 
 SPICE is the better desktop experience; VNC is the one that works on any VM without changing its display.
 
@@ -34,7 +36,7 @@ it once read. The window title comes from Proxmox VE:
 
 <img src={openSpice.src} alt="remote-viewer titled CT 105 (1), showing the SPICE console of a container at the login prompt" width="742" />
 
-What SPICE adds over VNC — sound, USB devices of your computer in the VM, clipboard, folder sharing — depends
+What SPICE adds over VNC (sound, USB devices of your computer in the VM, clipboard, folder sharing) depends
 on the VM configuration and on the SPICE guest tools inside it: see [SPICE](https://pve.proxmox.com/wiki/SPICE)
 in the Proxmox VE wiki.
 
@@ -44,7 +46,7 @@ in the Proxmox VE wiki.
 service every Proxmox VE node runs on **port 3128**, which forwards the connection to the right node.
 
 By default the proxy is the host pepper connected to (`--host`). When your computer reaches the cluster by
-another address — a node behind NAT, a different name from outside — or port 3128 is open only on some
+another address (a node behind NAT, a different name from outside) or port 3128 is open only on some
 nodes, choose it with `--proxy`:
 
 ```bash

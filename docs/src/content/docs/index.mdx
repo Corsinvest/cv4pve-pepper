@@ -1,6 +1,6 @@
 ---
 title: cv4pve-pepper
-description: Open the SPICE or VNC console of a Proxmox VE VM or container with one command — from your desktop, a script or a shortcut, without the web interface.
+description: Open the SPICE or VNC console of a Proxmox VE VM or container with one command, from your desktop, a script or a shortcut, without the web interface.
 head:
   # Search results and browser tab: the name and what it is, without Starlight's "| site title" suffix
   - tag: title
@@ -12,7 +12,7 @@ head:
 template: splash
 hero:
   title: The console of any <span class="accent-mark">Proxmox VE</span> VM, one command away
-  tagline: Runs outside the nodes, API only. cv4pve-pepper finds the VM or container by id or name, starts it if you ask, and opens its SPICE or VNC console in remote-viewer — no web interface, no .vv file to download.
+  tagline: Runs outside the nodes, API only. cv4pve-pepper finds the VM or container by id or name, starts it if you ask, and opens its SPICE or VNC console in remote-viewer, with no web interface and no .vv file to download.
   actions:
     - text: Get started
       link: /cv4pve-pepper/getting-started/
@@ -47,12 +47,12 @@ not when the same people open the same VMs every day, when a script has to show 
 should only get an icon on the desktop, not the whole web interface.
 
 cv4pve-pepper does those steps in one command. It asks the API for a console ticket, writes the file for the
-viewer and starts `remote-viewer` with it — so the console can be a shortcut, a line in a script or a menu
+viewer and starts `remote-viewer` with it, so the console can be a shortcut, a line in a script or a menu
 entry.
 
 ## One command. Any VM. SPICE or VNC.
 
-SPICE for the full desktop experience, VNC for every running VM and container — switch with a single flag.
+SPICE for the full desktop experience, VNC for every running VM and container: switch with a single flag.
 
 <Tabs>
   <TabItem label="SPICE">
@@ -100,7 +100,7 @@ VM from a list. Both use the same console code, so SPICE and VNC behave the same
 ## Outside the nodes, API only
 
 cv4pve-pepper runs on the computer where the console should appear and talks only to the Proxmox VE REST API
-on port 8006 — plus the SPICE proxy on port 3128 for SPICE. Nothing is installed on the nodes and no SSH is
+on port 8006, plus the SPICE proxy on port 3128 for SPICE. Nothing is installed on the nodes and no SSH is
 needed: an account with the privileges in [Permissions](/cv4pve-pepper/permissions/) is enough. Give it more
 than one node and it connects to the first one that answers.
 

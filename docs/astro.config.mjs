@@ -46,7 +46,7 @@ export default defineConfig({
                 label: 'Linux',
                 icon: 'linux',
                 lines: [
-                  '# install (x64 — arm64 and arm on the Releases page)',
+                  '# install (x64; arm64 and arm on the Releases page)',
                   `wget ${releases}/\\\ncv4pve-pepper-linux-x64.zip`,
                   'unzip cv4pve-pepper-linux-x64.zip',
                   'chmod +x cv4pve-pepper',

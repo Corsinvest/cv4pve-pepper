@@ -1,23 +1,25 @@
 ---
-title: Options
-description: Every cv4pve-pepper option — how it finds the VM or container, starting it, the viewer, SPICE proxy and VNC — checked against the code.
+title: "cv4pve-pepper options: VM, viewer, SPICE proxy and VNC"
+description: "Every cv4pve-pepper option, checked against the code: how it finds the VM or container, starting it, the viewer, SPICE proxy and VNC."
+sidebar:
+  label: Options
 ---
 
 ```bash
 cv4pve-pepper --host=… --api-token=… --vmid=<id or name> --viewer=<path to remote-viewer> [options]
 ```
 
-The connection options — `--host`, `--api-token`, `--username`, `--password`, `--validate-certificate` and
-`@` options files — are the same for every cv4pve tool: see
+The connection options (`--host`, `--api-token`, `--username`, `--password`, `--validate-certificate` and
+`@` options files) are the same for every cv4pve tool: see
 [Connection](/cv4pve-pepper/connection/).
 
 | Option | Default | What it does |
 |---|---|---|
-| `--vmid` | — | The VM or container: id, name or part of the name. See below |
+| `--vmid` | - | The VM or container: id, name or part of the name. See below |
 | `--viewer` | *(required)* | Path of `remote-viewer`. It must exist |
-| `--viewer-options` | — | Extra arguments for the viewer, passed as they are. Quote the value |
-| `--vnc` | off | Open the VNC console instead of SPICE — see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
-| `--proxy` | the host pepper connected to | SPICE proxy: an IP address or host name, reached on port 3128 — see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy) |
+| `--viewer-options` | - | Extra arguments for the viewer, passed as they are. Quote the value |
+| `--vnc` | off | Open the VNC console instead of SPICE: see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/) |
+| `--proxy` | the host pepper connected to | SPICE proxy: an IP address or host name, reached on port 3128 (see [SPICE proxy](/cv4pve-pepper/spice-and-vnc/#spice-proxy)) |
 | `--start-or-resume` | off | Start the guest if stopped, resume it if paused |
 | `--wait-for-startup` | `5` | Seconds to wait for the start or resume task |
 | `--dry-run` | off | Do everything except starting the viewer; not listed in `--help` |
@@ -41,7 +43,7 @@ In `%web` the `%` marks where the name **starts**, not where other text may be: 
 and `server%` matches `webserver`. `%web%` matches both.
 :::
 
-When more than one guest matches, pepper takes the first one ordered by **node name** and then by **id** —
+When more than one guest matches, pepper takes the first one ordered by **node name** and then by **id**,
 not the lowest id in the cluster. Use the exact id or name when it matters.
 
 ## Start or resume
@@ -54,7 +56,7 @@ pepper waits for the start task up to `--wait-for-startup` seconds, then:
 - if the task is still running, it opens the console anyway.
 
 The task ends when Proxmox VE has started the VM, not when the guest OS has booted: the console shows the
-boot. Without `--start-or-resume`, a stopped guest gives an error — see
+boot. Without `--start-or-resume`, a stopped guest gives an error: see
 [Troubleshooting](/cv4pve-pepper/troubleshooting/#common-errors).
 
 ## The viewer

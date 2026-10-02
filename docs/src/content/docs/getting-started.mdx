@@ -1,6 +1,8 @@
 ---
-title: Getting started
+title: Install cv4pve-pepper and open a Proxmox VE console
 description: Install cv4pve-pepper and remote-viewer, connect to a Proxmox VE cluster and open the first console.
+sidebar:
+  label: Getting started
 ---
 
 import { Tabs, TabItem } from '@astrojs/starlight/components';
@@ -49,7 +51,7 @@ The same viewer serves SPICE and VNC. VNC clients such as TigerVNC do not work: 
 
 ## First run
 
-Create a dedicated user and API token first — see [Permissions](/cv4pve-pepper/permissions/). Then open
+Create a dedicated user and API token first: see [Permissions](/cv4pve-pepper/permissions/). Then open
 the console of VM 100:
 
 ```bash
@@ -64,8 +66,8 @@ cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 `
 ```
 
 - Without other options pepper opens the **SPICE** console. A VM needs its display set to SPICE for that;
-  containers always have it. For any other running VM add `--vnc` — see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/).
-- `--vmid` takes the id or the name of the VM or container — see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container).
+  containers always have it. For any other running VM add `--vnc`: see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/).
+- `--vmid` takes the id or the name of the VM or container: see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container).
 - If the guest is stopped, add `--start-or-resume` to start it first.
 
 With SPICE pepper exits as soon as the viewer has started, and the viewer stays open. With `--vnc` pepper
