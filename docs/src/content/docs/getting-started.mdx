@@ -5,73 +5,82 @@ sidebar:
   label: Getting started
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 import CliInstall from '@corsinvest/cv4pve-docs-theme/components/CliInstall.astro';
 
 cv4pve-pepper runs **on the computer where the console should appear** and talks only to the Proxmox VE
 REST API. Nothing is installed on the nodes.
 
-## Install cv4pve-pepper
+## First console
 
-<CliInstall repo="cv4pve-pepper" />
+<Steps>
 
-## Install remote-viewer
+1. **Install cv4pve-pepper**
 
-pepper does not draw the console itself: it starts `remote-viewer`, the viewer of the virt-viewer project,
-and passes it the connection. Its path is the required `--viewer` option.
+   <CliInstall repo="cv4pve-pepper" />
 
-:::note[Only remote-viewer]
-The same viewer serves SPICE and VNC. VNC clients such as TigerVNC do not work: pepper passes the viewer a
-`.vv` connection file, which only `remote-viewer` reads.
-:::
+2. **Install remote-viewer**
 
-<Tabs syncKey="os">
-  <TabItem label="Windows">
-    ```powershell
-    winget install RedHat.VirtViewer
-    ```
-    The viewer is `C:\Program Files\VirtViewer v<version>\bin\remote-viewer.exe`, e.g. `VirtViewer v11.0-256`.
-    The installer is also on the [SPICE download page](https://www.spice-space.org/download.html).
-  </TabItem>
-  <TabItem label="Debian / Ubuntu">
-    ```bash
-    sudo apt install virt-viewer    # /usr/bin/remote-viewer
-    ```
-  </TabItem>
-  <TabItem label="RHEL / Fedora">
-    ```bash
-    sudo dnf install virt-viewer    # /usr/bin/remote-viewer
-    ```
-  </TabItem>
-  <TabItem label="macOS">
-    See the [SPICE macOS client page](https://www.spice-space.org/osx-client.html), then pass the path of
-    `remote-viewer` to `--viewer`.
-  </TabItem>
-</Tabs>
+   pepper does not draw the console itself: it starts `remote-viewer`, the viewer of the virt-viewer project,
+   and passes it the connection. Its path is the required `--viewer` option.
 
-## First run
+   :::note[Only remote-viewer]
+   The same viewer serves SPICE and VNC. VNC clients such as TigerVNC do not work: pepper passes the viewer a
+   `.vv` connection file, which only `remote-viewer` reads.
+   :::
 
-Create a dedicated user and API token first: see [Permissions](/cv4pve-pepper/permissions/). Then open
-the console of VM 100:
+   <Tabs syncKey="os">
+     <TabItem label="Windows">
+       ```powershell
+       winget install RedHat.VirtViewer
+       ```
+       The viewer is `C:\Program Files\VirtViewer v<version>\bin\remote-viewer.exe`, e.g. `VirtViewer v11.0-256`.
+       The installer is also on the [SPICE download page](https://www.spice-space.org/download.html).
+     </TabItem>
+     <TabItem label="Debian / Ubuntu">
+       ```bash
+       sudo apt install virt-viewer    # /usr/bin/remote-viewer
+       ```
+     </TabItem>
+     <TabItem label="RHEL / Fedora">
+       ```bash
+       sudo dnf install virt-viewer    # /usr/bin/remote-viewer
+       ```
+     </TabItem>
+     <TabItem label="macOS">
+       See the [SPICE macOS client page](https://www.spice-space.org/osx-client.html), then pass the path of
+       `remote-viewer` to `--viewer`.
+     </TabItem>
+   </Tabs>
 
-```bash
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 --viewer=/usr/bin/remote-viewer
-```
+3. **Create an API token**
 
-On Windows:
+   Create a dedicated user and API token: see [Permissions](/cv4pve-pepper/permissions/).
 
-```powershell
-cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 `
-  --viewer="C:\Program Files\VirtViewer v11.0-256\bin\remote-viewer.exe"
-```
+4. **Open the first console**
 
-- Without other options pepper opens the **SPICE** console. A VM needs its display set to SPICE for that;
-  containers always have it. For any other running VM add `--vnc`: see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/).
-- `--vmid` takes the id or the name of the VM or container: see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container).
-- If the guest is stopped, add `--start-or-resume` to start it first.
+   Open the console of VM 100:
 
-With SPICE pepper exits as soon as the viewer has started, and the viewer stays open. With `--vnc` pepper
-keeps running until you close the viewer, because it carries the console traffic.
+   ```bash
+   cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 --viewer=/usr/bin/remote-viewer
+   ```
+
+   On Windows:
+
+   ```powershell
+   cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=<uuid>' --vmid=100 `
+     --viewer="C:\Program Files\VirtViewer v11.0-256\bin\remote-viewer.exe"
+   ```
+
+   - Without other options pepper opens the **SPICE** console. A VM needs its display set to SPICE for that;
+     containers always have it. For any other running VM add `--vnc`: see [SPICE and VNC](/cv4pve-pepper/spice-and-vnc/).
+   - `--vmid` takes the id or the name of the VM or container: see [Options](/cv4pve-pepper/options/#finding-the-vm-or-container).
+   - If the guest is stopped, add `--start-or-resume` to start it first.
+
+   With SPICE pepper exits as soon as the viewer has started, and the viewer stays open. With `--vnc` pepper
+   keeps running until you close the viewer, because it carries the console traffic.
+
+</Steps>
 
 Several nodes, username and password, certificates and options in a file: see
 [Connection](/cv4pve-pepper/connection/).
