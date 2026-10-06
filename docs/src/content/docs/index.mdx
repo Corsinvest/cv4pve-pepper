@@ -25,19 +25,59 @@ hero:
 
 import FeatureGrid from '@corsinvest/cv4pve-docs-theme/components/FeatureGrid.astro';
 import CtaBand from '@corsinvest/cv4pve-docs-theme/components/CtaBand.astro';
+import Motto from '@corsinvest/cv4pve-docs-theme/components/Motto.astro';
+import CliInstall from '@corsinvest/cv4pve-docs-theme/components/CliInstall.astro';
 import proxmoxLogo from '../../assets/proxmox-logo.svg';
 import openSpice from '../../assets/open-spice.png';
 import openVnc from '../../assets/open-vnc.png';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 export const features = [
-  { title: "SPICE or VNC", text: "SPICE for VMs with a SPICE display and for containers; --vnc for any running VM or container, with no display setting to change.", href: 'spice-and-vnc/' },
-  { title: "By id or by name", text: "--vmid takes the id, the name (any case) or a part of the name, so a shortcut keeps working when the VM moves to another node.", href: 'options/#finding-the-vm-or-container' },
-  { title: "Starts it for you", text: "--start-or-resume starts a stopped guest or resumes a paused one, waits for the start task and opens the console.", href: 'options/#start-or-resume' },
-  { title: "One icon per VM", text: "Put the connection and the VM in a parameter file and make a desktop shortcut to it: one double-click opens the console.", href: 'desktop-shortcut/' },
-  { title: "VNC through the API port", text: "The VNC console travels inside the API connection on port 8006: nothing else to open in the firewall.", href: 'spice-and-vnc/#vnc' },
-  { title: "Any node as SPICE proxy", text: "SPICE goes through the spiceproxy on port 3128 of the node you connect to, or of the node you name with --proxy.", href: 'spice-and-vnc/#spice-proxy' },
+  { icon: 'mdi:monitor', title: "SPICE or VNC", text: "SPICE for VMs with a SPICE display and for containers; --vnc for any running VM or container, with no display setting to change.", href: 'spice-and-vnc/' },
+  { icon: 'mdi:card-search-outline', title: "By id or by name", text: "--vmid takes the id, the name (any case) or a part of the name, so a shortcut keeps working when the VM moves to another node.", href: 'options/#finding-the-vm-or-container' },
+  { icon: 'mdi:play-circle-outline', title: "Starts it for you", text: "--start-or-resume starts a stopped guest or resumes a paused one, waits for the start task and opens the console.", href: 'options/#start-or-resume' },
+  { icon: 'mdi:apps', title: "One icon per VM", text: "Put the connection and the VM in a parameter file and make a desktop shortcut to it: one double-click opens the console.", href: 'desktop-shortcut/' },
+  { icon: 'mdi:lan-connect', title: "VNC through the API port", text: "The VNC console travels inside the API connection on port 8006: nothing else to open in the firewall.", href: 'spice-and-vnc/#vnc' },
+  { icon: 'mdi:transit-connection-variant', title: "Any node as SPICE proxy", text: "SPICE goes through the spiceproxy on port 3128 of the node you connect to, or of the node you name with --proxy.", href: 'spice-and-vnc/#spice-proxy' },
 ];
+
+<Motto />
+
+<CliInstall repo="cv4pve-pepper" />
+
+pepper shows the console in `remote-viewer`: install it too, then open the console of VM 100.
+
+<Tabs syncKey="os">
+  <TabItem label="Linux" icon="linux">
+
+```bash
+sudo apt install virt-viewer    # Debian / Ubuntu; other systems: see Getting started
+
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=…' --vmid=100 \
+  --viewer=/usr/bin/remote-viewer
+```
+
+  </TabItem>
+  <TabItem label="macOS" icon="apple">
+
+```bash
+# remote-viewer: see Getting started
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=…' --vmid=100 \
+  --viewer=/path/to/remote-viewer
+```
+
+  </TabItem>
+  <TabItem label="Windows" icon="seti:windows">
+
+```powershell
+winget install RedHat.VirtViewer
+
+cv4pve-pepper --host=pve01 --api-token='pepper@pve!console=…' --vmid=100 `
+  --viewer="C:\Program Files\VirtViewer v11.0-256\bin\remote-viewer.exe"
+```
+
+  </TabItem>
+</Tabs>
 
 ## Why
 

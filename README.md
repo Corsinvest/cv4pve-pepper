@@ -60,7 +60,7 @@ SPICE for the full desktop experience, VNC for every running VM and container: [
 - **Starts it for you**: `--start-or-resume` starts a stopped guest or resumes a paused one, then opens the console.
 - **One icon per VM**: a parameter file and a desktop shortcut, on Windows and Linux; no console window on Windows.
 - **Keeps working with a node down**: give it more than one host and it uses the first that answers.
-- **Single self-contained binary**: Windows, Linux and macOS, nothing else to install besides `remote-viewer`.
+- **Windows, Linux and macOS**: nothing else to install besides `remote-viewer`.
 
 ---
 
@@ -110,6 +110,10 @@ Professional support and consulting available through [Corsinvest](https://www.c
 
 ---
 
-Part of [cv4pve](https://www.corsinvest.it/cv4pve) suite | Made with ❤️ in Italy by [Corsinvest](https://www.corsinvest.it)
+**By sysadmins, for sysadmins.**
+
+Part of [cv4pve](https://www.corsinvest.it/en/cv4pve/) suite | Made with ❤️ in Italy by [Corsinvest](https://www.corsinvest.it)
+
+Proxmox® is a registered trademark of Proxmox Server Solutions GmbH. cv4pve is developed by Corsinvest and is not a Proxmox product.
 
 Copyright © Corsinvest Srl
